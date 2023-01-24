@@ -72,7 +72,7 @@ public class Main
             enemylist.toFirst();
             //Es wird geguckt ob die Schneemänner in einem Radius von 500 vom flugzeug sind
             while (enemylist.hasAccess()) {
-                System.out.println(enemylist.getContent().getx());
+                //System.out.println(enemylist.getContent().getx());
                 if(spieler.getx() <= enemylist.getContent().getx()+500
                 && spieler.getx() >= enemylist.getContent().getx()-500
                 && spieler.gety() <= enemylist.getContent().gety()+500

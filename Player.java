@@ -78,7 +78,6 @@ public class Player
         
         return (            power*Math.sin(Math.toRadians(alpha)) 
                             - drag(vhor)
-                            + lift(vhor)*Math.cos(Math.toRadians(alpha))*Math.cos(Math.toRadians(gamma))
                             - masse * 9.81)
                             /masse;
                             
@@ -87,7 +86,7 @@ public class Player
     public double horbeschl(){
         return (    power * Math.cos(Math.toRadians(alpha)) * Math.cos(Math.toRadians(beta))
                     - drag(vhor)
-                    - lift(vhor) * (Math.sin(Math.toRadians(alpha)) * Math.cos(Math.toRadians(gamma)) * Math.cos(Math.toRadians(beta)) + Math.sin(Math.toRadians(gamma)) * Math.sin(Math.toRadians(beta))  ))
+                    )
                     /masse;
     }
     
@@ -108,22 +107,14 @@ public class Player
         
     }
     
-    public double lift(double temp){
-        v = Math.sqrt(Math.pow(vhor,2)+Math.pow(vvert,2));
-        return Math.pow(temp,2)*liftcoefficient();
-        
-    }
+    
     
     public double dragcoefficient()
     {
         return Math.pow(angleofattack(),2) * (20/22500) + 0.05;
     }
     
-    public double liftcoefficient(){
-        if(angleofattack()<=18) return angleofattack()*0.074+0.37;
-        
-        else return - angleofattack()*0.074+8.362;
-    }
+    
     
     public double angleofattack()
     {
