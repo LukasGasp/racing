@@ -7,27 +7,27 @@ public class Player
     private double x;
     private double y;
     private double z;
-    private int winkhorglob, winkvertglob,masse;
-    private double ywinkel,vvert,vside,vhor,vertwinkelbewegung,horwinkelbewegung,drag,lift,alpha,beta,gamma,zeit,v,temp;
+    private int winkvertglob,masse;
+    private double ywinkel,vvert,vside,vhor,vertwinkelbewegung,horwinkelbewegung,alpha,beta,gamma,zeit,temp,winkhorglob;
     private long letztezeit,diesezeit;
+    private boolean bodenkontakt, bremsen;
     
     double power;
     public Player()
     {
         // Variablen werden initialisiert
-        
-        
         x = 100;
         y = 10;
         z = 0;
         winkvertglob = 0;
         winkhorglob = 0;
-        vhor = 200;
+        vhor = 100;
         vvert = 0;
         vside = 0;
         masse = 1000;
         vertwinkelbewegung = 0;
         horwinkelbewegung = 0;
+        bodenkontakt = true;
         letztezeit = System.currentTimeMillis();
         
         // Objekte erzeugen        
@@ -37,8 +37,9 @@ public class Player
         kamera0.setzePosition(x, y, z);
         kamera0.zeigeAchsen(true);   
         kamera0.setzeBlickpunkt(0, 100, 0);
+
         
-        kamera0.setzeStereomodus(true); // Stereo!
+        //kamera0.setzeStereomodus(true); // Stereo!
     }
     
     public void bewegezu(double tempx, double tempy, double tempz){
@@ -58,65 +59,81 @@ public class Player
     
     public void gehe(double amount){
         
-        kamera0.vor(1);
+        kamera0.vor(amount);
         x=kamera0.gibX();
         y=kamera0.gibY();
         z=kamera0.gibZ();
         
     }
+
+    public void bremse() {
+        if(bremsen)bremsen = false;
+        else bremsen = true;
+    }
+
+    private double bremsrate() {
+        temp = 1-Math.exp(-vhor/1500);
+        if(temp<0.03)return 0.97;
+        else return Math.pow(temp, 1.00/1000);
+    }
     
-    public void neuehorgesch(){
+    private void neuehorgesch(){
         vhor = Math.sqrt(Math.pow(vhor,2)+Math.pow(vside,2));
-        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/vhor));
+        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/vhor)) + ((Math.abs(beta)<1)?beta/100:0);
         beta = winkhorglob - horwinkelbewegung;
         vside = 0;
     }
     
     //FLugzeugphysics Start
     
-    public double vertbeschl(){
-        
-        return (            power*Math.sin(Math.toRadians(alpha)) 
-                            - drag(vhor)
-                            - masse * 9.81)
-                            /masse;
-                            
-    }
-    
-    public double horbeschl(){
-        return (    power * Math.cos(Math.toRadians(alpha)) * Math.cos(Math.toRadians(beta))
+    private double horbeschl(){
+        return (    ((bremsen)?0:power())
                     - drag(vhor)
                     )
                     /masse;
     }
-    
-    public double sidebeschl(){
-        temp = horwinkelbewegung-beta;
-        return (Math.sin(Math.toRadians(temp))*(-100));
-        
-        /*return (    power * Math.cos(Math.toRadians(alpha)) * Math.sin(Math.toRadians(beta))
-                    - drag(vside)
-                    - lift(vside) * (Math.sin(Math.toRadians(alpha)) * Math.cos(Math.toRadians(gamma)) * Math.sin(Math.toRadians(beta)) * Math.cos(Math.toRadians(beta)) + Math.sin(Math.toRadians(gamma)) * Math.cos(Math.toRadians(beta))  
-                    ))
-                    /masse;*/
-    }
-    
-    public double drag(double temp){
-        //v = Math.sqrt(Math.pow(vhor,2)+Math.pow(vvert,2));
-        return dragcoefficient() * 100 * 1.225 * Math.pow(temp,2) / 2;
+
+    public double power() {
+        return power * Math.exp(-vhor/100);
         
     }
     
+    private double sidebeschl(){
+        //Diese Methode dreht die bew. richt. in kam. richt.
+        beta = winkhorglob - horwinkelbewegung;
+        return (Math.sin(Math.toRadians(beta))*20   
+        );
+    }
+    
+    private double drag(double temp){
+        return dragcoefficient() * 10 * 1.225 * Math.pow(temp,2) / 2; 
+    }
+    
+    private boolean abgehoben(){
+        if(bodenkontakt){
+            if( beta<-45||beta>45  ||  beta<-25&&bremsen||beta>25&&bremsen) return false;
+            else return true;
+        }
+        else{
+            if(vhor<5) return true;
+            else return false;
+        }
+    }
+
+    private double reibung() {
+        if(-90<beta&&beta<90) return ( Math.abs(Math.sin(Math.toRadians(beta))));
+        else return 2;
+    }    
     
     
-    public double dragcoefficient()
+    private double dragcoefficient()
     {
         return Math.pow(angleofattack(),2) * (20/22500) + 0.05;
     }
     
     
     
-    public double angleofattack()
+    private double angleofattack()
     {
         
         return alpha - vertwinkelbewegung;
@@ -128,20 +145,22 @@ public class Player
         
         diesezeit = System.currentTimeMillis();
         zeit = diesezeit - letztezeit; //zeit gibt die zeitlichen abstände zwischen durchgängen an, um die Physik akkurat darzustellen
-        
-        v = Math.sqrt(Math.pow(vhor,2)+Math.pow(vvert,2));
-        
-        //vvert + vertbeschl()*(zeit/1000)
+
+        bodenkontakt = abgehoben();
+        System.out.println(beta);
+        System.out.println(bremsen);
         vvert = 0;
-        vhor = vhor + horbeschl()*(zeit/1000);
+        
+        vhor = (vhor 
+                + ( (bodenkontakt)?( Math.abs(Math.cos(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)) : 0) 
+                - ( Math.abs(Math.sin(Math.toRadians(beta))))*2
+                - ( Math.abs(Math.sin(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)))
+                * ((bremsen)?bremsrate():1)
+                ;
+        if(vhor<0.00001)vhor=0.00001;
         vside = vside + sidebeschl()*(zeit/1000); 
         
-        
-        
-        neuehorgesch(); 
-        
-        //vertwinkelbewegung = Math.toDegrees(Math.atan(vvert/vhor));
-        
+        neuehorgesch();
         
         bewegezu(x + Math.cos(Math.toRadians(horwinkelbewegung))*vhor*(zeit/1000),
         y + vvert*(zeit/1000),
@@ -155,16 +174,15 @@ public class Player
         y=kamera0.gibY();
         z=kamera0.gibZ(); //Kamerakoordinaten werden regelmäßig wieder abgefragt
         letztezeit = System.currentTimeMillis();
-        
     }
     
     //Winkel der Kamera Methoden
     
     public void yaw(double winkel){
         
-        winkhorglob = winkhorglob + (int)winkel;
+        winkhorglob = winkhorglob + winkel;
         ywinkel = Math.sin(Math.toRadians(winkvertglob)) * 100 + y;
-        kamera0.setzeBlickpunkt(x+ Math.cos(Math.toRadians(winkhorglob))* Math.cos(Math.toRadians(winkvertglob)) *  100      ,ywinkel, z + Math.sin(Math.toRadians(winkhorglob))* Math.cos(Math.toRadians(winkvertglob))*100);
+        kamera0.setzeBlickpunkt(x+ Math.cos(Math.toRadians(winkhorglob))* Math.cos(Math.toRadians(winkvertglob)) *100,ywinkel, z + Math.sin(Math.toRadians(winkhorglob))* Math.cos(Math.toRadians(winkvertglob))*100);
         x=kamera0.gibX();
         y=kamera0.gibY();
         z=kamera0.gibZ();
@@ -235,6 +253,13 @@ public class Player
     
     public double getpower(){
         return  power;
+    }
+    public double gethorbeschl(){
+        return horbeschl();
+    }
+    
+    public double getsidebeschl(){
+        return sidebeschl();
     }
     
     

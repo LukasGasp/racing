@@ -8,10 +8,11 @@ public class Landschaft
     private Schneemann schneemann1,schneemann2;
     private GLTextur textur;  
     private GLTextur himmeltextur;
+    private GLQuader wand1,wand2,wand3,wand4;
     
     public Landschaft()
     {
-        //Lichter werden erzeugt
+        //Lichter werden erzeugt 
         licht1 = new GLLicht();
         licht1.drehe(20, 20, 20);        
         licht2 = new GLLicht();        
@@ -23,6 +24,11 @@ public class Landschaft
         himmeltextur = new GLTextur("sky.jpg");
         boden = new GLBoden(textur); //textur wird sofort angewandt
         himmel = new GLHimmel(himmeltextur);
+
+        wand1 = new GLQuader(0, 0, 1000, 2000, 100, 10);
+        wand2 = new GLQuader(1000, 0, 0, 10, 100, -2000);
+        wand3 = new GLQuader(-1000, 0, 0, 10, 100, 2000);
+        wand4 = new GLQuader(0, 0, -1000, -2000, 100, 10);
     }
     
     

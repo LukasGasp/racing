@@ -1,6 +1,7 @@
+import java.util.Random;
+
 import GLOOP.*;
 import basis.*;
-import java.util.Random;
 
 public class Main
 {   
@@ -9,6 +10,7 @@ public class Main
     Player spieler;
     Schneemann enemy;
     Sys sys;
+
     // io
 
     GLTastatur t; // Tastatur
@@ -23,12 +25,18 @@ public class Main
 
     List<Schneemann> enemylist;
 
-    public Main()
+    public static void main(String[] args)
+    {
+      Main main = new Main();
+      main.oldmain();
+    }
+
+    private void oldmain()
     {   
         spieler = new Player();
         landschaft = new Landschaft();
         
-        sys = new Sys();
+        
         t = new GLTastatur();
         
         Random rand = new Random(); 
@@ -37,7 +45,7 @@ public class Main
         for (int i = 0; i < 50; i++) { // Populate List
             enemy = new Schneemann(
             -50000 + spieler.getx() + rand.nextInt(100000),
-            -50000 + spieler.gety() + rand.nextInt(100000),
+            50,
             -50000 + spieler.getz() + rand.nextInt(100000)
             );
             enemylist.append(enemy);
@@ -57,7 +65,7 @@ public class Main
                 enemylist.toFirst();
                 enemy = new Schneemann(
                 -5000 + spieler.getx() + rand.nextInt(10000),
-                -5000 + spieler.gety() + rand.nextInt(10000),
+                50,
                 -5000 + spieler.getz() + rand.nextInt(10000)
                 ); //Neuer Schneemann wird erzeugt
                 for (int i = 0; i < 0 + rand.nextInt(49); i++){
@@ -71,6 +79,8 @@ public class Main
             spieler.bewegdich();
             enemylist.toFirst();
             //Es wird geguckt ob die Schneemänner in einem Radius von 500 vom flugzeug sind
+            
+            /*
             while (enemylist.hasAccess()) {
                 //System.out.println(enemylist.getContent().getx());
                 if(spieler.getx() <= enemylist.getContent().getx()+500
@@ -83,6 +93,7 @@ public class Main
                 }
                 enemylist.next();
             }
+            */
             
             //Einzelne Konsolenseiten werden angezeigt(zum debugging)
             switch(seite)
@@ -102,8 +113,8 @@ public class Main
                 System.out.println();
                 System.out.println();
                 System.out.println("Geschwindigkeiten:");
-                System.out.println("Vertikal / Seitlich / Power:");
-                System.out.println(spieler.getvvert() + " " + spieler.getvside() + " " + spieler.getpower());
+                System.out.println("Power:");
+                System.out.println(spieler.getpower());
                 System.out.println("HORIZONTAL/temp:");
                 System.out.println(spieler.getvhor()+ " " +spieler.gettemp());
                 break;
@@ -115,8 +126,8 @@ public class Main
                 System.out.println();
                 System.out.println("Beschleunigungen:");
                 System.out.println();
-                System.out.println("Vertikal / Horizonatal / Seitlich:");
-                System.out.println(spieler.vertbeschl() + " " + spieler.horbeschl()+ " " + spieler.sidebeschl());
+                System.out.println("Horizonatal / Seitlich:");
+                System.out.println(spieler.gethorbeschl()+ " " + spieler.getsidebeschl());
                 System.out.println();
                 break;
             }
@@ -144,21 +155,30 @@ public class Main
             if(t.wurdeGedrueckt()){       //Steuerung
                 switch(t.gibZeichen()){
                     case 'a':
-                        spieler.yaw(-1);
+                        spieler.yaw(-0.5);
                         break;
                     case 'd':
+                        spieler.yaw(0.5);
+                        break;
+                    case 'q':
+                        spieler.yaw(-1);
+                        break;
+                    case 'e':
                         spieler.yaw(1);
                         break;
                     case 'o':
-                        if(spieler.getpower() < 30000){
-                            spieler.setpower(spieler.power+5000);
-                            break;
-                        }
-                    case 'l':
-                        if(spieler.getpower() >= 5000){
-                            spieler.setpower(spieler.power-5000);
+                        if(spieler.getpower() < 100000){
+                            spieler.setpower(spieler.power+10000);
                             
                         }
+                        break;
+                    case 'l':
+                        if(spieler.getpower() >= 10000){
+                            spieler.setpower(spieler.power-10000);
+                        }
+                        break;
+                    case ' ': //programm wird per "@" geschlossen
+                        spieler.bremse();
                         break;
                     case '+':
                         seite++;
@@ -171,6 +191,7 @@ public class Main
                     case '@': //programm wird per "@" geschlossen
                         running=false;
                         break;
+                    
                     default:
                     Sys.erstelleAusgabe("Kein gültiges Zeichen");
                     break;
@@ -178,6 +199,6 @@ public class Main
             }
 
         }
-        sys.beenden();
+        Sys.beenden();
     }
     }
