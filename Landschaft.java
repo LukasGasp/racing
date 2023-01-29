@@ -10,6 +10,7 @@ public class Landschaft
     private GLTextur himmeltextur;
     private GLQuader wand1,wand2,wand3,wand4;
     
+    
     public Landschaft()
     {
         //Lichter werden erzeugt 
@@ -25,10 +26,10 @@ public class Landschaft
         boden = new GLBoden(textur); //textur wird sofort angewandt
         himmel = new GLHimmel(himmeltextur);
 
-        wand1 = new GLQuader(0, 0, 1000, 2000, 100, 10);
-        wand2 = new GLQuader(1000, 0, 0, 10, 100, -2000);
-        wand3 = new GLQuader(-1000, 0, 0, 10, 100, 2000);
-        wand4 = new GLQuader(0, 0, -1000, -2000, 100, 10);
+        wand1 = new GLQuader(0, 0, 10000, 20000, 100, 10);
+        wand2 = new GLQuader(10000, 0, 0, 10, 100, -20000);
+        wand3 = new GLQuader(-10000, 0, 0, 10, 100, 20000);
+        wand4 = new GLQuader(0, 0, -10000, -20000, 100, 10);
     }
     
     

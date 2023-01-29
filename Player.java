@@ -8,7 +8,7 @@ public class Player
     private double y;
     private double z;
     private int winkvertglob,masse;
-    private double ywinkel,vvert,vside,vhor,vertwinkelbewegung,horwinkelbewegung,alpha,beta,gamma,zeit,temp,winkhorglob;
+    private double ywinkel,vvert,vside,vhor,horwinkelbewegung,alpha,beta,gamma,zeit,temp,winkhorglob;
     private long letztezeit,diesezeit;
     private boolean bodenkontakt, bremsen;
     
@@ -25,7 +25,7 @@ public class Player
         vvert = 0;
         vside = 0;
         masse = 1000;
-        vertwinkelbewegung = 0;
+        power = 100000;
         horwinkelbewegung = 0;
         bodenkontakt = true;
         letztezeit = System.currentTimeMillis();
@@ -71,20 +71,32 @@ public class Player
         else bremsen = true;
     }
 
-    private double bremsrate() {
-        temp = 1-Math.exp(-vhor/1500);
-        if(temp<0.03)return 0.97;
-        else return Math.pow(temp, 1.00/1000);
+    public double bremsrate() {
+        //Experimentell herausgefundende Werte
+        if (vhor>110) {
+            temp=0.998;
+        } else if(vhor>100) {
+            temp=0.995;
+        } else if(vhor>70) {
+            temp=0.99;
+        } else if(vhor>50) {
+            temp=0.98;
+        } else if(vhor>30) {
+            temp=0.97;
+        } else {
+            temp=0.90;
+        }
+        return temp;
     }
     
     private void neuehorgesch(){
         vhor = Math.sqrt(Math.pow(vhor,2)+Math.pow(vside,2));
-        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/vhor)) + ((Math.abs(beta)<1)?beta/100:0);
+        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/vhor)) + ((Math.abs(beta)<1) ? (beta/15) :((Math.abs(beta)<17) ? Math.signum(beta)/4 : 0));
         beta = winkhorglob - horwinkelbewegung;
         vside = 0;
     }
     
-    //FLugzeugphysics Start
+    //Fahrzeugphysics Start
     
     private double horbeschl(){
         return (    ((bremsen)?0:power())
@@ -135,8 +147,7 @@ public class Player
     
     private double angleofattack()
     {
-        
-        return alpha - vertwinkelbewegung;
+        return alpha;
     }
     
     //Flugzeugphysics Ende
@@ -148,7 +159,6 @@ public class Player
 
         bodenkontakt = abgehoben();
         System.out.println(beta);
-        System.out.println(bremsen);
         vvert = 0;
         
         vhor = (vhor 
@@ -168,7 +178,7 @@ public class Player
         ); //Die eigentliche Bewegung der Kamera
         
         kamera0.setzeBlickpunkt(x + Math.cos(Math.toRadians(winkhorglob)) * Math.cos(Math.toRadians(winkvertglob)) *100,
-                               Math.sin(Math.toRadians(winkvertglob)) * 100+ y, 
+                               Math.sin(Math.toRadians(winkvertglob)) * 100 + y, 
                                z  + Math.sin(Math.toRadians(winkhorglob)) * Math.cos(Math.toRadians(winkvertglob)) *100); //Einstellung des Blickwinkels der Kamera
         x=kamera0.gibX();
         y=kamera0.gibY();
@@ -187,6 +197,7 @@ public class Player
         y=kamera0.gibY();
         z=kamera0.gibZ();
     }
+    //Die methode bleibt weil debuggen
     public void pitch(double winkel){
         
         winkvertglob = winkvertglob + (int)winkel;
@@ -239,9 +250,6 @@ public class Player
         return  temp;
     }
     
-     public double getvertwinkelbewegung(){
-        return  vertwinkelbewegung;
-    }
     
      public double gethorwinkelbewegung(){
         return  horwinkelbewegung;

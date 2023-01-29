@@ -10,7 +10,11 @@ public class Main
     Player spieler;
     Schneemann enemy;
     Sys sys;
+    Sound ferrari;
+    int gametick;
 
+    Fenster debugFenster;
+    Stift s,s2;
     // io
 
     GLTastatur t; // Tastatur
@@ -28,14 +32,15 @@ public class Main
     public static void main(String[] args)
     {
       Main main = new Main();
-      main.oldmain();
+      main.setup();
     }
 
-    private void oldmain()
+    private void setup()
     {   
+        setupdebugfenster();
+
         spieler = new Player();
         landschaft = new Landschaft();
-        
         
         t = new GLTastatur();
         
@@ -53,11 +58,63 @@ public class Main
         this.fuehreaus();
     }
 
+    private void setupdebugfenster() {
+        debugFenster = new Fenster("DEBUG",1000,300);
+        gametick = 0;
+        s = new Stift(debugFenster);
+        s2 = new Stift(debugFenster);
+
+        s2.hoch();
+        s2.setzeFarbe(Farbe.BLAU);
+        s2.bewegeBis(10, 20);
+        s2.schreibe("Beta");
+        drawlines();
+        s2.bewegeBis(0, 300);
+        s2.runter();
+        
+        s.hoch();
+        s.setzeFarbe(Farbe.ROT);
+        s.bewegeBis(10, 10);
+        s.schreibe("Speed");
+        drawlines();
+        s.bewegeBis(0, 300);
+        s.runter();
+    }
+
+    private void drawlines() {
+        s.setzeFarbe(Farbe.HELLGRAU);                
+        for (int i = 0; i <= 20; i++) {
+            s.hoch();
+            s.bewegeBis(i*50, 300);
+            s.runter();
+            s.bewegeBis(i*50, 10);
+            s.schreibe(Integer.toString(i));
+        }
+        s.hoch();
+        s.setzeFarbe(Farbe.ROT);
+    }
+
     private void fuehreaus(){
         running = true;
         Random rand = new Random();
         System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
+        
         while(running){
+            //DebugFenster
+            s.runter();
+            s2.runter();
+            gametick++;
+            if(gametick>1000){
+                debugFenster.loescheAlles();
+                gametick=0;
+                drawlines();
+                s.hoch();
+                s2.hoch();
+            }
+            s.bewegeBis(gametick, 300-spieler.getvhor());
+            s2.bewegeBis(gametick, 150-3*spieler.getbeta());
+
+            //if(gametick==100)spieler.bremse();
             Hilfe.pause(20);
             
             //in zufälligen abständen werden schneemänner zufällig entfernt
@@ -115,7 +172,7 @@ public class Main
                 System.out.println("Geschwindigkeiten:");
                 System.out.println("Power:");
                 System.out.println(spieler.getpower());
-                System.out.println("HORIZONTAL/temp:");
+                System.out.println("Horizontal/temp:");
                 System.out.println(spieler.getvhor()+ " " +spieler.gettemp());
                 break;
             }
@@ -139,8 +196,8 @@ public class Main
                 System.out.println("Winkel:");
                 System.out.println("Alpha / Beta / Gamma:");
                 System.out.println(spieler.getalpha() + " " + spieler.getbeta() + " " + spieler.getgamma());
-                System.out.println("Vertikal / Horizonatal:");
-                System.out.println(spieler.getvertwinkelbewegung() + " " + spieler.gethorwinkelbewegung());
+                System.out.println(" Horizonatal:");
+                System.out.println(spieler.gethorwinkelbewegung());
                 break;
             }
             switch(seite)
@@ -201,4 +258,4 @@ public class Main
         }
         Sys.beenden();
     }
-    }
+}
