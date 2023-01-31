@@ -1,19 +1,19 @@
 <h1>Dies ist das Informatik Projekt von Michael und Lukas</h1>
 
-- PROJEKTBEZEICHNUNG:             Flieger  
+- PROJEKTBEZEICHNUNG:             Racing
 - PROJEKTZWECK:                   Informatik Arbeit  
 - VERSION:                        V.0.5.2  
 - WIE IST DAS PROJEKT ZU STARTEN: BlueJ  
 - AUTOREN:                        Michael, Lukas  
-- BENUTZERHINWEISE:               Sie müssen fliegen können  
+- BENUTZERHINWEISE:               Sie müssen <s>fliegen</s> fahren können  
 
 <h2>Spielidee:</h2>
 
-Man steuert ein exakt 2000 kg schweres auto, welches eine Kraft von 30000 Newton aufbringen kann. Gemäß folgender Veröffentlichungen der NASA haben wir Formeln extrahiert, verarbeitet und implementiert.
+Man steuert ein exakt 2000 kg schweres auto, welches eine Kraft von 100000 Newton aufbringen kann.
 
 [Informatik.pdf](https://github.com/LukasGasp/flieger/files/7875854/Informatik.pdf)
 
-Man steuert dieses auto durch eine traumhafte Schneelandschaft. Um diese spannender zu machen (und den Arbeitsauftrag zu erfüllen) werden Schneemänner zufällig um den Spieler erzeugt. Das erste Element der Liste wird gelöscht und durch Zufall neu um den Spieler platziert. Der neue Scheemann wird ans Ende der Liste gehangen. Im laufe des Spiels kommen immer mehr Schneemänner dazu. (Bis zu 50). So gibt es Möglichkeit Speedruns zu machen.
+Man steuert dieses Auto durch eine traumhafte Schneelandschaft. Um diese spannender zu machen (und den Arbeitsauftrag zu erfüllen) werden Schneemänner zufällig um den Spieler erzeugt. Das erste Element der Liste wird gelöscht und durch Zufall neu um den Spieler platziert. Der neue Scheemann wird ans Ende der Liste gehangen. Im Laufe des Spiels kommen immer mehr Schneemänner dazu. (Bis zu 50). So gibt es Möglichkeit Speedruns zu machen.
 
 <h2>Benutzerhinweise</h2>
 
@@ -23,9 +23,10 @@ Man steuert dieses auto durch eine traumhafte Schneelandschaft. Um diese spannen
 
 <s>Wir gehen davon aus, dass dem Spieler die Gesetzte der Aerodynamik bekannt sind. Hier eine kurze Erinnerung an Kräfte, welche auf ein Flugzeug wirken:</s>
 
-motor beschleunigen: o  
-motor entschleunigen: l  
-Steuerung: w, a, s, d  
+Motor beschleunigen: o  
+Motor entschleunigen: l  
+Lenken: a - d, q - e
+Bremsen: SPACE
 Infos: + / - 
 Programm schließen: z
 
