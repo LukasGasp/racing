@@ -2,6 +2,12 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "gloop/GLOOP.jar",
-        "basis.jar"
+        "basis.jar",
+        "gloop/jogl-all-natives-windows-amd64.jar",
+        "gloop/gluegen-rt.jar",
+        "gloop/gluegen-rt-natives-windows-amd64.jar",
+        "gloop/gluegen-rt-natives-windows-i586.jar",
+        "gloop/jogl-all.jar",
+        "gloop/jogl-all-natives-windows-i586.jar"
     ]
 }

@@ -163,9 +163,7 @@ public class Main
                 System.out.println(spieler.gety());
                 System.out.println(spieler.getz());
                 break;
-            }
-            switch(seite)
-            {
+
                 case 1:
                 System.out.println();
                 System.out.println();
@@ -175,9 +173,7 @@ public class Main
                 System.out.println("Horizontal/temp:");
                 System.out.println(spieler.getvhor()+ " " +spieler.gettemp());
                 break;
-            }
-            switch(seite)
-            {
+
                 case 2:
                 System.out.println();
                 System.out.println();
@@ -187,9 +183,7 @@ public class Main
                 System.out.println(spieler.gethorbeschl()+ " " + spieler.getsidebeschl());
                 System.out.println();
                 break;
-            }
-            switch(seite)
-            {
+
                 case 3:
                 System.out.println();
                 System.out.println();
@@ -199,9 +193,7 @@ public class Main
                 System.out.println(" Horizonatal:");
                 System.out.println(spieler.gethorwinkelbewegung());
                 break;
-            }
-            switch(seite)
-            {
+
                 case 0:
                 System.out.println();
                 System.out.println();
