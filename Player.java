@@ -91,7 +91,9 @@ public class Player
     
     private void neuehorgesch(){
         vhor = Math.sqrt(Math.pow(vhor,2)+Math.pow(vside,2));
-        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/vhor)) + ((Math.abs(beta)<1) ? (beta/15) :((Math.abs(beta)<17) ? Math.signum(beta)/4 : 0));
+        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/vhor)) 
+                                                + ((Math.abs(beta)<1) ? (beta/15) :((Math.abs(beta)<17) ? Math.signum(beta)/4 : 0)) 
+                                                + ((vhor<160&&bodenkontakt)?Math.signum(beta)/4:0);
         beta = winkhorglob - horwinkelbewegung;
         vside = 0;
     }
@@ -121,9 +123,10 @@ public class Player
         return dragcoefficient() * 10 * 1.225 * Math.pow(temp,2) / 2; 
     }
     
+    // Überprüft Bodenkontakt
     private boolean abgehoben(){
         if(bodenkontakt){
-            if( beta<-45||beta>45  ||  beta<-25&&bremsen||beta>25&&bremsen) return false;
+            if( (beta<-45||beta>45)||  beta<-25&&bremsen||beta>25&&bremsen) return false;
             else return true;
         }
         else{
@@ -131,13 +134,7 @@ public class Player
             else return false;
         }
     }
-
-    private double reibung() {
-        if(-90<beta&&beta<90) return ( Math.abs(Math.sin(Math.toRadians(beta))));
-        else return 2;
-    }    
-    
-    
+     
     private double dragcoefficient()
     {
         return Math.pow(angleofattack(),2) * (20/22500) + 0.05;
