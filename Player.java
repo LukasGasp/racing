@@ -17,7 +17,7 @@ public class Player
     {
         // Variablen werden initialisiert
         x = 100;
-        y = 10;
+        y = 30;
         z = 0;
         winkvertglob = 0;
         winkhorglob = 0;
@@ -108,7 +108,7 @@ public class Player
     }
 
     public double power() {
-        return power * Math.exp(-vhor/100);
+        return power * Math.exp(-vhor/200);
         
     }
     
@@ -155,7 +155,6 @@ public class Player
         zeit = diesezeit - letztezeit; //zeit gibt die zeitlichen abstände zwischen durchgängen an, um die Physik akkurat darzustellen
 
         bodenkontakt = abgehoben();
-        System.out.println(beta);
         vvert = 0;
         
         vhor = (vhor 
@@ -185,6 +184,11 @@ public class Player
     
     //Winkel der Kamera Methoden
     
+    public void steer(double winkel) {
+        if(vhor<10)return;
+        yaw(winkel);
+    }
+
     public void yaw(double winkel){
         
         winkhorglob = winkhorglob + winkel;
@@ -268,8 +272,12 @@ public class Player
     }
     
     
-    //ein setter
+    //<s>ein</s> zwei setter
     public void setpower(double temp){
         power = temp;
+    }
+
+    public void setvhor(double temp) {
+        vhor = temp;
     }
 }

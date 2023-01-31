@@ -54,7 +54,7 @@ public class Main
         for (int i = 0; i < 50; i++) { // Populate List
             enemy = new Schneemann(
             -50000 + spieler.getx() + rand.nextInt(100000),
-            50,
+            30,
             -50000 + spieler.getz() + rand.nextInt(100000)
             );
             enemylist.append(enemy);
@@ -117,6 +117,20 @@ public class Main
         s.setzeFarbe(Farbe.ROT);
     }
 
+    private void checksnowmen() {
+        while (enemylist.hasAccess()) {
+            if(spieler.getx() <= enemylist.getContent().getx()+50
+            && spieler.getx() >= enemylist.getContent().getx()-50
+            && spieler.gety() <= enemylist.getContent().gety()+50
+            && spieler.gety() >= enemylist.getContent().gety()-50 
+            && spieler.getz() <= enemylist.getContent().getz()+50
+            && spieler.getz() >= enemylist.getContent().getz()-50){
+               spieler.setvhor(10);
+            }
+            enemylist.next();
+        }
+    }
+
     private void fuehreaus(){
         running = true;
         Random rand = new Random();
@@ -137,7 +151,6 @@ public class Main
             s.bewegeBis(gametick, 300-spieler.getvhor());
             s2.bewegeBis(gametick, 150-3*spieler.getbeta());
 
-            //if(gametick==100)spieler.bremse();
             Hilfe.pause(20);
             
             //in zufälligen abständen werden schneemänner zufällig entfernt
@@ -145,7 +158,7 @@ public class Main
                 enemylist.toFirst();
                 enemy = new Schneemann(
                 -5000 + spieler.getx() + rand.nextInt(10000),
-                50,
+                30,
                 -5000 + spieler.getz() + rand.nextInt(10000)
                 ); //Neuer Schneemann wird erzeugt
                 for (int i = 0; i < 0 + rand.nextInt(49); i++){
@@ -158,85 +171,69 @@ public class Main
             //Kamera wird bewegt
             spieler.bewegdich();
             enemylist.toFirst();
-            //Es wird geguckt ob die Schneemänner in einem Radius von 500 vom flugzeug sind
+            //Es wird geguckt ob die Schneemänner in einem Radius von 50 vom auto sind
             
-            /*
-            while (enemylist.hasAccess()) {
-                //System.out.println(enemylist.getContent().getx());
-                if(spieler.getx() <= enemylist.getContent().getx()+500
-                && spieler.getx() >= enemylist.getContent().getx()-500
-                && spieler.gety() <= enemylist.getContent().gety()+500
-                && spieler.gety() >= enemylist.getContent().gety()-500 
-                && spieler.getz() <= enemylist.getContent().getz()+500
-                && spieler.getz() >= enemylist.getContent().getz()-500){
-                   Sys.erstelleAusgabe("Gratulation"); 
-                }
-                enemylist.next();
-            }
-            */
+            checksnowmen();
             
             //Einzelne Konsolenseiten werden angezeigt(zum debugging)
-            switch(seite)
+            if(gametick%50==0)
             {
-                case 4:
                 System.out.println();
                 System.out.println();
-                System.out.println("Koordinaten:");
-                System.out.println(spieler.getx());
-                System.out.println(spieler.gety());
-                System.out.println(spieler.getz());
-                break;
+                System.out.println();
+                System.out.println();
 
-                case 1:
-                System.out.println();
-                System.out.println();
-                System.out.println("Geschwindigkeiten:");
-                System.out.println("Power:");
-                System.out.println(spieler.getpower());
-                System.out.println("Horizontal/temp:");
-                System.out.println(spieler.getvhor()+ " " +spieler.gettemp());
-                break;
+                switch(seite)
+                {
+                    case 4:
+                    System.out.println("Koordinaten:");
+                    System.out.println(spieler.getx());
+                    System.out.println(spieler.gety());
+                    System.out.println(spieler.getz());
+                    break;
 
-                case 2:
-                System.out.println();
-                System.out.println();
-                System.out.println("Beschleunigungen:");
-                System.out.println();
-                System.out.println("Horizonatal / Seitlich:");
-                System.out.println(spieler.gethorbeschl()+ " " + spieler.getsidebeschl());
-                System.out.println();
-                break;
+                    case 1:
+                    System.out.println("Geschwindigkeiten:");
+                    System.out.println("Power:");
+                    System.out.println(spieler.getpower());
+                    System.out.println("Horizontal/temp:");
+                    System.out.println(spieler.getvhor()+ " " +spieler.gettemp());
+                    break;
 
-                case 3:
-                System.out.println();
-                System.out.println();
-                System.out.println("Winkel:");
-                System.out.println("Alpha / Beta / Gamma:");
-                System.out.println(spieler.getalpha() + " " + spieler.getbeta() + " " + spieler.getgamma());
-                System.out.println(" Horizonatal:");
-                System.out.println(spieler.gethorwinkelbewegung());
-                break;
+                    case 2:
+                    System.out.println("Beschleunigungen:");
+                    System.out.println();
+                    System.out.println("Horizonatal / Seitlich:");
+                    System.out.println(spieler.gethorbeschl()+ " " + spieler.getsidebeschl());
+                    System.out.println();
+                    break;
 
-                case 0:
-                System.out.println();
-                System.out.println();
-                
-                break;
+                    case 3:
+                    System.out.println("Winkel:");
+                    System.out.println("Alpha / Beta / Gamma:");
+                    System.out.println(spieler.getalpha() + " " + spieler.getbeta() + " " + spieler.getgamma());
+                    System.out.println(" Horizonatal:");
+                    System.out.println(spieler.gethorwinkelbewegung());
+                    break;
+
+                    default:
+                    break;
+                }
             }
             
             if(t.wurdeGedrueckt()){       //Steuerung
                 switch(t.gibZeichen()){
                     case 'a':
-                        spieler.yaw(-0.5);
+                        spieler.steer(-0.5);
                         break;
                     case 'd':
-                        spieler.yaw(0.5);
+                        spieler.steer(0.5);
                         break;
                     case 'q':
-                        spieler.yaw(-1);
+                        spieler.steer(-1);
                         break;
                     case 'e':
-                        spieler.yaw(1);
+                        spieler.steer(1);
                         break;
                     case 'o':
                         if(spieler.getpower() < 100000){
