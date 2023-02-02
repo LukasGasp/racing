@@ -8,7 +8,7 @@ public class Player
     private double y;
     private double z;
     private int winkvertglob,masse;
-    private double ywinkel,vvert,vside,vhor,horwinkelbewegung,alpha,beta,gamma,zeit,temp,winkhorglob;
+    private double ywinkel,vvert,vside,vhor,horwinkelbewegung,beta,zeit,temp,winkhorglob;
     private long letztezeit,diesezeit;
     private boolean bodenkontakt, bremsen;
     
@@ -16,7 +16,7 @@ public class Player
     public Player()
     {
         // Variablen werden initialisiert
-        x = 100;
+        x = 0;
         y = 30;
         z = 0;
         winkvertglob = 0;
@@ -58,7 +58,6 @@ public class Player
     }
     
     public void gehe(double amount){
-        
         kamera0.vor(amount);
         x=kamera0.gibX();
         y=kamera0.gibY();
@@ -91,10 +90,18 @@ public class Player
     
     private void neuehorgesch(){
         vhor = Math.sqrt(Math.pow(vhor,2)+Math.pow(vside,2));
+        //Beta-Berechnung:
         horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/vhor)) 
-                                                + ((Math.abs(beta)<1) ? (beta/15) :((Math.abs(beta)<17) ? Math.signum(beta)/4 : 0)) 
-                                                + ((vhor<160&&bodenkontakt)?Math.signum(beta)/4:0);
+                                                + ((Math.abs(beta)<1) 
+                                                    ?(beta/15) 
+                                                    :((Math.abs(beta)<17&&bodenkontakt) 
+                                                        ? Math.signum(beta)/4 
+                                                        : 0)) 
+                                                + ((vhor<160&&bodenkontakt)
+                                                    ?Math.signum(beta)/4
+                                                    :0);
         beta = winkhorglob - horwinkelbewegung;
+        //Beta-Berechnung Ende
         vside = 0;
     }
     
@@ -102,7 +109,7 @@ public class Player
     
     private double horbeschl(){
         return (    ((bremsen)?0:power())
-                    - drag(vhor)
+                    - 0.30625 * Math.pow(vhor,2)
                     )
                     /masse;
     }
@@ -119,10 +126,6 @@ public class Player
         );
     }
     
-    private double drag(double temp){
-        return dragcoefficient() * 10 * 1.225 * Math.pow(temp,2) / 2; 
-    }
-    
     // Überprüft Bodenkontakt
     private boolean abgehoben(){
         if(bodenkontakt){
@@ -130,21 +133,9 @@ public class Player
             else return true;
         }
         else{
-            if(vhor<5) return true;
+            if(vhor<5||beta<0.5&&beta>-0.5) return true;
             else return false;
         }
-    }
-     
-    private double dragcoefficient()
-    {
-        return Math.pow(angleofattack(),2) * (20/22500) + 0.05;
-    }
-    
-    
-    
-    private double angleofattack()
-    {
-        return alpha;
     }
     
     //Flugzeugphysics Ende
@@ -158,12 +149,14 @@ public class Player
         vvert = 0;
         
         vhor = (vhor 
-                + ( (bodenkontakt)?( Math.abs(Math.cos(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)) : 0) 
+                + ( (bodenkontakt)
+                    ? (Math.abs(Math.cos(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)) 
+                    : 0) 
                 - ( Math.abs(Math.sin(Math.toRadians(beta))))*2
                 - ( Math.abs(Math.sin(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)))
                 * ((bremsen)?bremsrate():1)
                 ;
-        if(vhor<0.00001)vhor=0.00001;
+        if(vhor<0.00001&&vhor>-1)vhor=0.00001;
         vside = vside + sidebeschl()*(zeit/1000); 
         
         neuehorgesch();
@@ -202,7 +195,6 @@ public class Player
     public void pitch(double winkel){
         
         winkvertglob = winkvertglob + (int)winkel;
-        alpha = alpha + winkel;
         ywinkel = Math.sin(Math.toRadians(winkvertglob)) * 100 + y;
         kamera0.setzeBlickpunkt(x + Math.cos(Math.toRadians(winkhorglob)) * Math.cos(Math.toRadians(winkvertglob)) *100,
                                Math.sin(Math.toRadians(winkvertglob)) * 100 + y, 
@@ -211,6 +203,12 @@ public class Player
         y=kamera0.gibY();
         z=kamera0.gibZ();
     }
+
+    public boolean kollision() {
+        if(x<-9997||x>9997||z<-9997||z>9997) return true;
+        else return false;
+    }
+
     
     // Getter
     // Um Probleme mit Variablentypen vorzubeugen
@@ -235,16 +233,8 @@ public class Player
         return  vhor;
     }
     
-    public double getalpha(){
-        return  alpha;
-    }
-    
      public double getbeta(){
         return  beta;
-    }
-    
-     public double getgamma(){
-        return  gamma;
     }
     
      public double gettemp(){

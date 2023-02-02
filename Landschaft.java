@@ -26,10 +26,10 @@ public class Landschaft
         boden = new GLBoden(textur); //textur wird sofort angewandt
         himmel = new GLHimmel(himmeltextur);
 
-        wand1 = new GLQuader(0, 0, 10000, 20000, 100, 10);
-        wand2 = new GLQuader(10000, 0, 0, 10, 100, -20000);
-        wand3 = new GLQuader(-10000, 0, 0, 10, 100, 20000);
-        wand4 = new GLQuader(0, 0, -10000, -20000, 100, 10);
+        wand1 = new GLQuader(0, 0, 10000, 20000, 200, 10);
+        wand2 = new GLQuader(10000, 0, 0, 10, 200, -20000);
+        wand3 = new GLQuader(-10000, 0, 0, 10, 200, 20000);
+        wand4 = new GLQuader(0, 0, -10000, -20000, 200, 10);
     }
     
     

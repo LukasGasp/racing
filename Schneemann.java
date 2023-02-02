@@ -10,6 +10,7 @@ public class Schneemann
     private GLTextur textur,texturleder,texturkarotte,texturstein;
     
     int x,y,z;
+    double winkel;
     
     
     public Schneemann(int x,int y,int z)
@@ -62,6 +63,27 @@ public class Schneemann
         return z;
     }
     
+    public void dreheum(double w) {
+        winkel = winkel + w;
+        auge1.drehe(0, -w, 0);
+        auge2.drehe(0, -w, 0);
+        kegel.drehe(0, -w, 0);
+        auge1.setzePosition(x + Math.sin(Math.toRadians(winkel + 8.44)) * 10 , y + 73 , z - Math.cos(Math.toRadians(winkel + 8.44)) * 10);
+        auge2.setzePosition(x + Math.sin(Math.toRadians(winkel - 8.44)) * 10 , y + 73 , z - Math.cos(Math.toRadians(winkel - 8.44)) * 10);
+        kegel.setzePosition(x + Math.sin(Math.toRadians(winkel)) * 10, y+70 , z - Math.cos(Math.toRadians(winkel)) * 10);
+    }
+
+    public void drehebis(double w) {
+        double deltaw = w - winkel;
+        winkel = w;
+        auge1.drehe(0, -deltaw, 0);
+        auge2.drehe(0, -deltaw, 0);
+        kegel.drehe(0, -deltaw, 0);
+        auge1.setzePosition(x + Math.sin(Math.toRadians(winkel + 8.44)) * 10 , y + 73 , z - Math.cos(Math.toRadians(winkel + 8.44)) * 10);
+        auge2.setzePosition(x + Math.sin(Math.toRadians(winkel - 8.44)) * 10 , y + 73 , z - Math.cos(Math.toRadians(winkel - 8.44)) * 10);
+        kegel.setzePosition(x + Math.sin(Math.toRadians(winkel)) * 10, y+70,  z - Math.cos(Math.toRadians(winkel)) * 10);
+    }
+
     public void delete(){
         // GLOOP aktualisiert beim Loschen nicht die Sichtbarkeit
         kugel1.setzeSichtbarkeit(false);
@@ -73,7 +95,7 @@ public class Schneemann
         zylinder1.setzeSichtbarkeit(false);
         zylinder2.setzeSichtbarkeit(false);
         Hilfe.pause(5); // Sonst ist das Unsichtbar machen noch nicht fertig. (Wussten nicht, dass java multithreaded ist!?)
-        kugel1.loescheDich();
+        kugel1.loesche();
         kugel2.loescheDich();
         kugel3.loescheDich();
         auge1.loescheDich();
