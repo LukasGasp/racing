@@ -270,4 +270,12 @@ public class Player
     public void setvhor(double temp) {
         vhor = temp;
     }
+    
+    public void setx(double temp) {
+        x = temp;
+    }
+    
+    public void setz(double temp) {
+        z = temp;
+    }
 }
