@@ -182,7 +182,8 @@ public class Main
             checksnowmen();
 
             if(spieler.kollision()){
-                Sys.erstelleAusgabe("kabumm");
+                spieler.setx(0);
+                spieler.setz(0);
                 spieler.setpower(0);
                 spieler.setvhor(0);
             }
