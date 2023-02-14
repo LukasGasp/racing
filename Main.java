@@ -17,7 +17,8 @@ public class Main
     Sound ferrari;
     int gametick;
 
-    Fenster debugFenster;
+    Fenster debugFenster, musicPlayer;
+    Bild b1,b2,b3;
     Stift s1;
     Stift s2;
     // io
@@ -50,11 +51,14 @@ public class Main
         Random rand = new Random();
         
         enemylist = new List<Schneemann>();
+        
+        Bild b1 = new Bild();
 
         for (int i = 0; i < 50; i++) { // Populate List
             enemylist.append(newSchneemann(-10000, 10000));
         }
         playSound("racing.wav", 999);
+        
         fuehreaus(rand);
     }
 
@@ -78,6 +82,8 @@ public class Main
 
     private void setupdebugfenster() {
         debugFenster = new Fenster("DEBUG",1000,300);
+        musicPlayer = new Fenster("Music",300,300);
+        
         gametick = 0;
         s1 = new Stift(debugFenster);
         s2 = new Stift(debugFenster);

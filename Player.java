@@ -138,7 +138,7 @@ public class Player
         }
     }
     
-    //Flugzeugphysics Ende
+    //Fahrzeugphysics Ende
     
     public void bewegdich(){ //Flugzeug wird bewegt
         
@@ -156,6 +156,7 @@ public class Player
                 - ( Math.abs(Math.sin(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)))
                 * ((bremsen)?bremsrate():1)
                 ;
+
         if(vhor<0.00001&&vhor>-1)vhor=0.00001;
         vside = vside + sidebeschl()*(zeit/1000); 
         
