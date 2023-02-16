@@ -70,7 +70,7 @@ public class Schneemann
         kegel.drehe(0, -w, 0);
         auge1.setzePosition(x + Math.sin(Math.toRadians(winkel + 8.44)) * 10 , y + 73 , z - Math.cos(Math.toRadians(winkel + 8.44)) * 10);
         auge2.setzePosition(x + Math.sin(Math.toRadians(winkel - 8.44)) * 10 , y + 73 , z - Math.cos(Math.toRadians(winkel - 8.44)) * 10);
-        kegel.setzePosition(x + Math.sin(Math.toRadians(winkel)) * 10, y+70 , z - Math.cos(Math.toRadians(winkel)) * 10);
+        kegel.setzePosition(x + Math.sin(Math.toRadians(winkel)) * 10, y + 70 , z - Math.cos(Math.toRadians(winkel)) * 10);
     }
 
     public void drehebis(double w) {

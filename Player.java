@@ -73,17 +73,19 @@ public class Player
     public double bremsrate() {
         //Experimentell herausgefundende Werte
         if (vhor>110) {
-            temp=0.998;
+            temp=0.002;
         } else if(vhor>100) {
-            temp=0.995;
+            temp=0.005;
         } else if(vhor>70) {
-            temp=0.99;
+            temp=0.01;
         } else if(vhor>50) {
-            temp=0.98;
+            temp=0.02;
         } else if(vhor>30) {
-            temp=0.97;
+            temp=0.03;
+        } else if(vhor<8){
+            temp=0.0001;  //Bugverhinderung
         } else {
-            temp=0.90;
+            temp=0.1;
         }
         return temp;
     }
@@ -154,7 +156,7 @@ public class Player
                     : 0) 
                 - ( Math.abs(Math.sin(Math.toRadians(beta))))*2
                 - ( Math.abs(Math.sin(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)))
-                * ((bremsen)?bremsrate():1)
+                - 200 * ((bremsen)?bremsrate():0)
                 ;
 
         if(vhor<0.00001&&vhor>-1)vhor=0.00001;

@@ -18,7 +18,7 @@ public class Main
     int gametick;
 
     Fenster debugFenster, musicPlayer;
-    Bild b1,b2,b3;
+    Button b1,b2,b3;
     Stift s1;
     Stift s2;
     // io
@@ -28,8 +28,13 @@ public class Main
 
     // Variablen
 
+    volatile boolean stopthread;
     boolean running;
     int seite;
+    int buttoncooldown;
+    static Thread musicthread;
+    Clip clip;
+    AudioInputStream inputStream;
 
     // Schneemannliste
 
@@ -52,33 +57,55 @@ public class Main
         
         enemylist = new List<Schneemann>();
         
-        Bild b1 = new Bild();
+        b1 = new Button( 10 ,10, 20, 20, "buttons/play.png");
+        b2 = new Button( 10 ,30, 20, 20, "buttons/pause.png");
+        b3 = new Button( 10 ,50, 20, 20, "buttons/next.png");
+
+        buttoncooldown = 0;
+        stopthread = false;
 
         for (int i = 0; i < 50; i++) { // Populate List
             enemylist.append(newSchneemann(-10000, 10000));
         }
-        playSound("racing.wav", 999);
+
+        setupaudio("racing.wav", 999);
         
         fuehreaus(rand);
     }
 
-    public static synchronized void playSound(final String url, int loops) {
-        new Thread(new Runnable() {
+    private void setupaudio(String url, int loops) {
+        try {
+            clip = AudioSystem.getClip();
+            inputStream = AudioSystem.getAudioInputStream(
+                Main.class.getResourceAsStream(url));
+            playSound(url, loops);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    public synchronized void playSound(final String url, int loops) {
+        musicthread = new Thread(new Runnable() {
           public void run() {
             try {
-              Clip clip = AudioSystem.getClip();
-              AudioInputStream inputStream = AudioSystem.getAudioInputStream(
-                Main.class.getResourceAsStream(url));
-              clip.open(inputStream);
-              clip.loop(loops);
-              clip.start(); 
-
+                clip.open(inputStream);
+                clip.loop(loops);
+                clip.start(); 
+                while(!stopthread)
+                {
+                    Thread.sleep(1000);
+                }
+                clip.close();
+                stopthread = false;
             } catch (Exception e) {
               System.err.println(e.getMessage());
             }
           }
-        }).start();
+        });
+        musicthread.start();
     }
+
 
     private void setupdebugfenster() {
         debugFenster = new Fenster("DEBUG",1000,300);
@@ -161,6 +188,22 @@ public class Main
         System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
         
         while(running){
+            
+            //Musicplayer Buttons
+            if(b1.pressed()&&buttoncooldown==0)
+            {
+                setupaudio("racing.wav", 999);
+                buttoncooldown++;
+            }
+            if(b2.pressed()&&buttoncooldown==0)
+            {
+                stopthread = true;
+                buttoncooldown++;
+            }
+
+            if(buttoncooldown>0)buttoncooldown++;
+            if(buttoncooldown>30)buttoncooldown=0;
+
             //DebugFenster
             s1.runter();
             s2.runter();
@@ -171,10 +214,12 @@ public class Main
                 drawlines();
                 s1.hoch();
                 s2.hoch();
+                
             }
             s1.bewegeBis(gametick, 300-spieler.getvhor());
             s2.bewegeBis(gametick, 150-2.5*spieler.getbeta());
 
+            System.out.println(stopthread);
             Hilfe.pause(20);
             
             //in zufälligen abständen werden schneemänner zufällig entfernt
@@ -303,3 +348,4 @@ public class Main
         }
     }
 }
+
