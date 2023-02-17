@@ -194,6 +194,7 @@ public class Player
         y=kamera0.gibY();
         z=kamera0.gibZ();
     }
+
     //Die methode bleibt weil debuggen
     public void pitch(double winkel){
         
@@ -256,12 +257,17 @@ public class Player
     public double getpower(){
         return  power;
     }
+    
     public double gethorbeschl(){
         return horbeschl();
     }
     
     public double getsidebeschl(){
         return sidebeschl();
+    }
+
+    public double getwinkhorglob(){
+        return winkhorglob;
     }
     
     

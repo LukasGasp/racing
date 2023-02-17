@@ -18,6 +18,8 @@ public class Main
     int gametick;
 
     Fenster debugFenster, musicPlayer;
+    TextFeld trackname, nexttrack;
+    TextBereich playing, next;
     Button b1,b2,b3;
     Stift s1;
     Stift s2;
@@ -29,16 +31,21 @@ public class Main
     // Variablen
 
     volatile boolean stopthread;
+    boolean musicpaused;
+    String currentsong;
     boolean running;
     int seite;
     int buttoncooldown;
     static Thread musicthread;
     Clip clip;
     AudioInputStream inputStream;
+    Random rand;
 
     // Schneemannliste
 
     List<Schneemann> enemylist;
+
+    List<String> musiklist;
 
     public static void main(String[] args)
     {
@@ -48,28 +55,21 @@ public class Main
 
     private void setup()
     {   
-        setupdebugfenster();
-
         spieler = new Player();
         landschaft = new Landschaft();
         t = new GLTastatur();
-        Random rand = new Random();
+        rand = new Random();
         
         enemylist = new List<Schneemann>();
-        
-        b1 = new Button( 10 ,10, 20, 20, "buttons/play.png");
-        b2 = new Button( 10 ,30, 20, 20, "buttons/pause.png");
-        b3 = new Button( 10 ,50, 20, 20, "buttons/next.png");
 
-        buttoncooldown = 0;
-        stopthread = false;
+        setupdebugfenster();
+
+        setupmusicplayer();
 
         for (int i = 0; i < 50; i++) { // Populate List
             enemylist.append(newSchneemann(-10000, 10000));
         }
 
-        setupaudio("racing.wav", 999);
-        
         fuehreaus(rand);
     }
 
@@ -78,23 +78,23 @@ public class Main
             clip = AudioSystem.getClip();
             inputStream = AudioSystem.getAudioInputStream(
                 Main.class.getResourceAsStream(url));
-            playSound(url, loops);
+            playSound(loops);
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }
 
-    public synchronized void playSound(final String url, int loops) {
+    private synchronized void playSound(int loops) {
         musicthread = new Thread(new Runnable() {
           public void run() {
             try {
                 clip.open(inputStream);
                 clip.loop(loops);
-                clip.start(); 
+                clip.start();
                 while(!stopthread)
                 {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 }
                 clip.close();
                 stopthread = false;
@@ -106,11 +106,8 @@ public class Main
         musicthread.start();
     }
 
-
     private void setupdebugfenster() {
         debugFenster = new Fenster("DEBUG",1000,300);
-        musicPlayer = new Fenster("Music",300,300);
-        
         gametick = 0;
         s1 = new Stift(debugFenster);
         s2 = new Stift(debugFenster);
@@ -130,6 +127,42 @@ public class Main
         drawlines();
         s1.bewegeBis(0, 300);
         s1.runter();
+    }
+
+    private void setupmusicplayer() {
+        musicPlayer = new Fenster("Music",350,100);
+        b1 = new Button( 10 ,10, 20, 20, "buttons/play.png");
+        b2 = new Button( 10 ,30, 20, 20, "buttons/pause.png");
+        b3 = new Button( 10 ,50, 20, 20, "buttons/next.png");
+        playing = new TextBereich(50, 20, 150, 20, musicPlayer);
+        playing.entferneRand();
+        playing.setzeEditierbar(false);
+        trackname = new TextFeld(50, 40, 300, 20, musicPlayer);
+        trackname.setzeEditierbar(false);
+        next = new TextBereich(50, 60, 150, 20, musicPlayer);
+        next.entferneRand();
+        next.setzeEditierbar(false);
+        nexttrack = new TextFeld(50, 80, 300, 20, musicPlayer);
+        nexttrack.setzeEditierbar(false);
+        
+        musiklist = new List<String>();
+        musiklist.append("racing.wav");
+        musiklist.append("ac-dc-highway-to-hell-official-video.wav");
+        musiklist.append("rankka-insane.wav");
+        musiklist.append("herzbeben.wav");
+
+        musiklist.toFirst();
+        currentsong = musiklist.getContent();
+        setupaudio(musiklist.getContent(), 1);
+        playing.setzeText("Now playing:");
+        trackname.setzeText(musiklist.getContent());
+        next.setzeText("Next:");
+        musiklist.next();
+        nexttrack.setzeText(musiklist.getContent());
+
+        buttoncooldown = 0;
+        stopthread = false;
+        musicpaused = false;
     }
 
     private void drawlines() {
@@ -157,53 +190,36 @@ public class Main
                enemylist.getContent().delete();
                enemylist.setContent(newSchneemann(-5000,5000));
             }
-            double IXZI = Math.sqrt(Math.pow(enemylist.getContent().getx()-spieler.getx(), 2) + Math.pow(enemylist.getContent().getz()-spieler.getz(), 2));
+            double IXZI = Math.sqrt(
+                                Math.pow(enemylist.getContent().getx()-spieler.getx(), 2)
+                              + Math.pow(enemylist.getContent().getz()-spieler.getz(), 2));
             double IZI = enemylist.getContent().getz()-spieler.getz();
-            enemylist.getContent().drehebis(Math.toDegrees(Math.asin(IZI/IXZI)));
+            enemylist.getContent().drehebis(Math.toDegrees(Math.asin(IZI/IXZI))-90);
             enemylist.next();
-            
         }
     }
 
     private Schneemann newSchneemann(int min, int max) {
-        Random rand = new Random();
         return new Schneemann(
-                min + rand.nextInt(Math.abs(min)+max),
-                30,
-                min + rand.nextInt(Math.abs(min)+max)
-                );
+            min + rand.nextInt(Math.abs(min)+max),
+            30,
+            min + rand.nextInt(Math.abs(min)+max)
+            );
     }
 
     private void deleterandomSchneemann(Random rand) {
         enemylist.toFirst();
-                for (int i = 0; i < rand.nextInt(49); i++){
-                    enemylist.next();
-                }
-                enemylist.getContent().delete();
-                enemylist.setContent(newSchneemann(-5000,5000));
+            for (int i = 0; i < rand.nextInt(49); i++){
+                enemylist.next();
+            }
+            enemylist.getContent().delete();
+            enemylist.setContent(newSchneemann(-5000,5000));
     }
 
     private void fuehreaus(Random rand){
         running = true;
         System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
-        
         while(running){
-            
-            //Musicplayer Buttons
-            if(b1.pressed()&&buttoncooldown==0)
-            {
-                setupaudio("racing.wav", 999);
-                buttoncooldown++;
-            }
-            if(b2.pressed()&&buttoncooldown==0)
-            {
-                stopthread = true;
-                buttoncooldown++;
-            }
-
-            if(buttoncooldown>0)buttoncooldown++;
-            if(buttoncooldown>30)buttoncooldown=0;
-
             //DebugFenster
             s1.runter();
             s2.runter();
@@ -214,12 +230,10 @@ public class Main
                 drawlines();
                 s1.hoch();
                 s2.hoch();
-                
             }
             s1.bewegeBis(gametick, 300-spieler.getvhor());
             s2.bewegeBis(gametick, 150-2.5*spieler.getbeta());
 
-            System.out.println(stopthread);
             Hilfe.pause(20);
             
             //in zufälligen abständen werden schneemänner zufällig entfernt
@@ -239,61 +253,59 @@ public class Main
                 spieler.setvhor(0);
             }
 
-            //Einzelne Konsolenseiten werden angezeigt(zum debugging)
-            if(gametick%50==0)
-            {
-                konsole();
-            }
-
+            konsole();
+            musicplayerbuttons();
             tastatur();
-            
-
         }
         Sys.beenden();
     }
 
     private void konsole() {
-        if(seite!=0)
+        //Einzelne Konsolenseiten werden angezeigt(zum debugging)
+        if(gametick%50==0)
         {
-            for (int i = 0; i < 5; i++) {
-                System.out.println();
+            if(seite!=0)
+            {
+                for (int i = 0; i < 5; i++) {
+                    System.out.println();
+                }
             }
-        }
-        switch(seite)
-        {
-            case 4:
-            System.out.println("Koordinaten:");
-            System.out.println(spieler.getx());
-            System.out.println(spieler.gety());
-            System.out.println(spieler.getz());
-            break;
+            switch(seite)
+            {
+                case 4:
+                System.out.println("Koordinaten:");
+                System.out.println(spieler.getx());
+                System.out.println(spieler.gety());
+                System.out.println(spieler.getz());
+                break;
 
-            case 1:
-            System.out.println("Geschwindigkeiten:");
-            System.out.println("Power:");
-            System.out.println(spieler.getpower());
-            System.out.println("Horizontal/temp:");
-            System.out.println(spieler.getvhor()+ " " +spieler.gettemp());
-            break;
+                case 1:
+                System.out.println("Geschwindigkeiten:");
+                System.out.println("Power:");
+                System.out.println(spieler.getpower());
+                System.out.println("Horizontal/temp:");
+                System.out.println(spieler.getvhor()+ " " +spieler.gettemp());
+                break;
 
-            case 2:
-            System.out.println("Beschleunigungen:");
-            System.out.println();
-            System.out.println("Horizonatal / Seitlich:");
-            System.out.println(spieler.gethorbeschl()+ " " + spieler.getsidebeschl());
-            System.out.println();
-            break;
+                case 2:
+                System.out.println("Beschleunigungen:");
+                System.out.println();
+                System.out.println("Horizonatal / Seitlich:");
+                System.out.println(spieler.gethorbeschl()+ " " + spieler.getsidebeschl());
+                System.out.println();
+                break;
 
-            case 3:
-            System.out.println("Winkel:");
-            System.out.println("Beta");
-            System.out.println(spieler.getbeta());
-            System.out.println(" Horizonatal:");
-            System.out.println(spieler.gethorwinkelbewegung());
-            break;
+                case 3:
+                System.out.println("Winkel:");
+                System.out.println("Beta");
+                System.out.println(spieler.getbeta());
+                System.out.println(" Horizonatal:");
+                System.out.println(spieler.gethorwinkelbewegung());
+                break;
 
-            default:
-            break;
+                default:
+                break;
+            }
         }
     }
 
@@ -347,5 +359,31 @@ public class Main
             }
         }
     }
-}
 
+    private void musicplayerbuttons() {
+        System.out.println(musicpaused);
+        if(b1.pressed()&&buttoncooldown==0&&musicpaused==true)
+            {
+                setupaudio(currentsong, 1);
+                musicpaused = false;
+                buttoncooldown++;
+            }
+        if(b2.pressed()&&buttoncooldown==0)
+            {
+                stopthread = true;
+                musicpaused = true;
+                buttoncooldown++;
+            }
+        if(b3.pressed()&&buttoncooldown==0)
+            {
+                trackname.setzeText(musiklist.getContent());
+                currentsong = musiklist.getContent();
+                musiklist.next();
+                if(musiklist.getContent()==null)musiklist.toFirst();
+                nexttrack.setzeText(musiklist.getContent());
+                buttoncooldown++;
+            }
+        if(buttoncooldown>0)buttoncooldown++;
+        if(buttoncooldown>30)buttoncooldown=0;
+    }
+}
