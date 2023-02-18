@@ -361,14 +361,13 @@ public class Main
     }
 
     private void musicplayerbuttons() {
-        System.out.println(musicpaused);
         if(b1.pressed()&&buttoncooldown==0&&musicpaused==true)
             {
                 setupaudio(currentsong, 1);
                 musicpaused = false;
                 buttoncooldown++;
             }
-        if(b2.pressed()&&buttoncooldown==0)
+        if(b2.pressed()&&buttoncooldown==0&&musicpaused==false)
             {
                 stopthread = true;
                 musicpaused = true;
