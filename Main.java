@@ -15,36 +15,39 @@ public class Main
     Schneemann enemy;
     Sys sys;
     Sound ferrari;
-    int gametick;
+    Clip clip;
+    static Thread musicthread;
+    AudioInputStream inputStream;
+    Random rand;
 
-    Fenster debugFenster, musicPlayer;
-    TextFeld trackname, nexttrack;
-    TextBereich playing, next;
+    Fenster debugFenster;
+    Fenster musicPlayer;
+    Fenster minimap;
+    Bild spielericon;
+    TextFeld nexttrack;
+    TextFeld trackname;
+    TextBereich playing;
+    TextBereich next;
     Button b1,b2,b3;
     Stift s1;
     Stift s2;
+    Stift sm;
     // io
 
     GLTastatur t; // Tastatur
     GLMaus m;
 
     // Variablen
-
     volatile boolean stopthread;
     boolean musicpaused;
-    String currentsong;
     boolean running;
+    int gametick;
     int seite;
     int buttoncooldown;
-    static Thread musicthread;
-    Clip clip;
-    AudioInputStream inputStream;
-    Random rand;
+    String currentsong;
 
     // Schneemannliste
-
     List<Schneemann> enemylist;
-
     List<String> musiklist;
 
     public static void main(String[] args)
@@ -60,17 +63,14 @@ public class Main
         t = new GLTastatur();
         rand = new Random();
         
-        enemylist = new List<Schneemann>();
-
+        setupminimap();
         setupdebugfenster();
-
         setupmusicplayer();
-
+        enemylist = new List<>();
         for (int i = 0; i < 50; i++) { // Populate List
             enemylist.append(newSchneemann(-10000, 10000));
         }
-
-        fuehreaus(rand);
+        fuehreaus();
     }
 
     private void setupaudio(String url, int loops) {
@@ -89,6 +89,7 @@ public class Main
         musicthread = new Thread(new Runnable() {
           public void run() {
             try {
+                stopthread = false;
                 clip.open(inputStream);
                 clip.loop(loops);
                 clip.start();
@@ -106,8 +107,27 @@ public class Main
         musicthread.start();
     }
 
+    private void setupminimap() {
+        minimap = new Fenster(400,400);
+        minimap.setzePosition(1000, 600);
+        sm = new Stift(minimap);
+        sm.runter();
+        sm.setzeFarbe(Farbe.SCHWARZ);
+        sm.fuelleMitFarbe(Farbe.WEISS);
+        sm.setzeLinienBreite(4);
+        sm.bewegeBis(400, 0);
+        sm.bewegeBis(400, 400);
+        sm.bewegeBis(0, 400);
+        sm.bewegeBis(0, 0);
+        sm.setzeLinienBreite(1);
+        sm.setzeFarbe(Farbe.BLAU);
+        spielericon = new Bild("playericon.png");
+        spielericon.setzeGroesse(10, 10);
+    }
+
     private void setupdebugfenster() {
         debugFenster = new Fenster("DEBUG",1000,300);
+        debugFenster.setzePosition(1000, 0);
         gametick = 0;
         s1 = new Stift(debugFenster);
         s2 = new Stift(debugFenster);
@@ -131,6 +151,7 @@ public class Main
 
     private void setupmusicplayer() {
         musicPlayer = new Fenster("Music",350,100);
+        musicPlayer.setzePosition(1000, 400);
         b1 = new Button( 10 ,10, 20, 20, "buttons/play.png");
         b2 = new Button( 10 ,30, 20, 20, "buttons/pause.png");
         b3 = new Button( 10 ,50, 20, 20, "buttons/next.png");
@@ -145,7 +166,7 @@ public class Main
         nexttrack = new TextFeld(50, 80, 300, 20, musicPlayer);
         nexttrack.setzeEditierbar(false);
         
-        musiklist = new List<String>();
+        musiklist = new List<>();
         musiklist.append("racing.wav");
         musiklist.append("ac-dc-highway-to-hell-official-video.wav");
         musiklist.append("rankka-insane.wav");
@@ -186,15 +207,16 @@ public class Main
             && spieler.getx() >= enemylist.getContent().getx()-50
             && spieler.getz() <= enemylist.getContent().getz()+50
             && spieler.getz() >= enemylist.getContent().getz()-50){
-               spieler.setvhor(0);
-               enemylist.getContent().delete();
-               enemylist.setContent(newSchneemann(-5000,5000));
+                spieler.setvhor(0);
+                deletecurrentSchneemann();
             }
             double IXZI = Math.sqrt(
                                 Math.pow(enemylist.getContent().getx()-spieler.getx(), 2)
                               + Math.pow(enemylist.getContent().getz()-spieler.getz(), 2));
             double IZI = enemylist.getContent().getz()-spieler.getz();
             enemylist.getContent().drehebis(Math.toDegrees(Math.asin(IZI/IXZI))-90);
+            sm.fuelle(Farbe.BLAU, Farbe.BLAU);
+            sm.kreis(enemylist.getContent().getx()/50+200, enemylist.getContent().getz()/50+200, 1);
             enemylist.next();
         }
     }
@@ -203,20 +225,28 @@ public class Main
         return new Schneemann(
             min + rand.nextInt(Math.abs(min)+max),
             30,
-            min + rand.nextInt(Math.abs(min)+max)
-            );
+            min + rand.nextInt(Math.abs(min)+max));
+    }
+
+    private void deletecurrentSchneemann() {
+        sm.setzeFarbe(Farbe.WEISS);
+        sm.setzeLinienBreite(3);
+        sm.rechteck(enemylist.getContent().getx()/50+198, enemylist.getContent().getz()/50+198, 4, 4);
+        sm.setzeLinienBreite(1);
+        sm.setzeFarbe(Farbe.BLAU);
+        enemylist.getContent().delete();
+        enemylist.setContent(newSchneemann(-5000,5000));
     }
 
     private void deleterandomSchneemann(Random rand) {
         enemylist.toFirst();
-            for (int i = 0; i < rand.nextInt(49); i++){
-                enemylist.next();
-            }
-            enemylist.getContent().delete();
-            enemylist.setContent(newSchneemann(-5000,5000));
+        for (int i = 0; i < rand.nextInt(49); i++){
+            enemylist.next();
+        }
+        deletecurrentSchneemann();
     }
 
-    private void fuehreaus(Random rand){
+    private void fuehreaus(){
         running = true;
         System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
         while(running){
@@ -243,7 +273,8 @@ public class Main
             
             //Kamera wird bewegt
             spieler.bewegdich();
-            
+            spielericon.setzePosition(spieler.getx()/50+200, spieler.getz()/50+200);
+            spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.getwinkhorglob()); //ich liebe diesen methodennamen
             checksnowmen();
 
             if(spieler.kollision()){
@@ -330,7 +361,6 @@ public class Main
                 case 'o':
                     if(spieler.getpower() < 100000){
                         spieler.setpower(spieler.power+10000);
-                        
                     }
                     break;
                 case 'l':
@@ -363,8 +393,8 @@ public class Main
     private void musicplayerbuttons() {
         if(b1.pressed()&&buttoncooldown==0&&musicpaused==true)
             {
-                setupaudio(currentsong, 1);
                 musicpaused = false;
+                setupaudio(currentsong, 1);
                 buttoncooldown++;
             }
         if(b2.pressed()&&buttoncooldown==0&&musicpaused==false)
