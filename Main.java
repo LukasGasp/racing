@@ -157,14 +157,10 @@ public class Main
         b3 = new Button( 10 ,50, 20, 20, "buttons/next.png");
         playing = new TextBereich(50, 20, 150, 20, musicPlayer);
         playing.entferneRand();
-        playing.setzeEditierbar(false);
         trackname = new TextFeld(50, 40, 300, 20, musicPlayer);
-        trackname.setzeEditierbar(false);
         next = new TextBereich(50, 60, 150, 20, musicPlayer);
         next.entferneRand();
-        next.setzeEditierbar(false);
         nexttrack = new TextFeld(50, 80, 300, 20, musicPlayer);
-        nexttrack.setzeEditierbar(false);
         
         musiklist = new List<>();
         musiklist.append("racing.wav");
