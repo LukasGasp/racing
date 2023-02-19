@@ -44,6 +44,7 @@ public class Main
     int gametick;
     int seite;
     int buttoncooldown;
+    int schneemannnumber;
     String currentsong;
 
     // Schneemannliste
@@ -66,8 +67,9 @@ public class Main
         setupminimap();
         setupdebugfenster();
         setupmusicplayer();
+        schneemannnumber = 50;
         enemylist = new List<>();
-        for (int i = 0; i < 50; i++) { // Populate List
+        for (int i = 0; i < schneemannnumber; i++) { // Populate List
             enemylist.append(newSchneemann(-10000, 10000));
         }
         fuehreaus();
@@ -182,6 +184,39 @@ public class Main
         musicpaused = false;
     }
 
+    private void fuehreaus(){
+        running = true;
+        System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
+        while(running){
+            Hilfe.pause(20);
+            gametick++;
+            debugfenster();
+            
+            //in zufälligen abständen werden schneemänner zufällig entfernt
+            if(rand.nextInt(1000) == 0){
+                deleterandomSchneemann(rand);
+            }
+            
+            //Kamera wird bewegt
+            spieler.bewegdich();
+            spielericon.setzePosition(spieler.getx()/50+200, spieler.getz()/50+200);
+            spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.getwinkhorglob()); //ich liebe diesen methodennamen
+            checksnowmen();
+
+            if(spieler.kollision()){
+                spieler.setx(0);
+                spieler.setz(0);
+                spieler.setpower(0);
+                spieler.setvhor(0);
+            }
+
+            konsole();
+            musicplayerbuttons();
+            tastatur();
+        }
+        Sys.beenden();
+    }
+
     private void drawlines() {
         s1.setzeFarbe(Farbe.HELLGRAU);                
         for (int i = 0; i <= 20; i++) {
@@ -210,18 +245,18 @@ public class Main
                                 Math.pow(enemylist.getContent().getx()-spieler.getx(), 2)
                               + Math.pow(enemylist.getContent().getz()-spieler.getz(), 2));
             double IZI = enemylist.getContent().getz()-spieler.getz();
-            enemylist.getContent().drehebis(Math.toDegrees(Math.asin(IZI/IXZI))-90);
-            sm.fuelle(Farbe.BLAU, Farbe.BLAU);
-            sm.kreis(enemylist.getContent().getx()/50+200, enemylist.getContent().getz()/50+200, 1);
+            double IXI = enemylist.getContent().getx()-spieler.getx();
+            double angle = Math.toDegrees(Math.asin(IZI/IXZI));
+            enemylist.getContent().drehebis((IXI>=0)?angle-90:180-angle-90);
             enemylist.next();
         }
     }
 
     private Schneemann newSchneemann(int min, int max) {
-        return new Schneemann(
-            min + rand.nextInt(Math.abs(min)+max),
-            30,
-            min + rand.nextInt(Math.abs(min)+max));
+        int x = min + rand.nextInt(Math.abs(min)+max);
+        int z = min + rand.nextInt(Math.abs(min)+max);
+        sm.kreis(x/50+200, z/50+200, 1);
+        return new Schneemann(x,30,z);
     }
 
     private void deletecurrentSchneemann() {
@@ -236,55 +271,24 @@ public class Main
 
     private void deleterandomSchneemann(Random rand) {
         enemylist.toFirst();
-        for (int i = 0; i < rand.nextInt(49); i++){
+        for (int i = 0; i < rand.nextInt(schneemannnumber); i++){
             enemylist.next();
         }
         deletecurrentSchneemann();
     }
 
-    private void fuehreaus(){
-        running = true;
-        System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
-        while(running){
-            //DebugFenster
-            s1.runter();
-            s2.runter();
-            gametick++;
-            if(gametick>1000){
-                debugFenster.loescheAlles();
-                gametick=0;
-                drawlines();
-                s1.hoch();
-                s2.hoch();
-            }
-            s1.bewegeBis(gametick, 300-spieler.getvhor());
-            s2.bewegeBis(gametick, 150-2.5*spieler.getbeta());
-
-            Hilfe.pause(20);
-            
-            //in zufälligen abständen werden schneemänner zufällig entfernt
-            if(rand.nextInt(1000) == 0){
-                deleterandomSchneemann(rand);
-            }
-            
-            //Kamera wird bewegt
-            spieler.bewegdich();
-            spielericon.setzePosition(spieler.getx()/50+200, spieler.getz()/50+200);
-            spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.getwinkhorglob()); //ich liebe diesen methodennamen
-            checksnowmen();
-
-            if(spieler.kollision()){
-                spieler.setx(0);
-                spieler.setz(0);
-                spieler.setpower(0);
-                spieler.setvhor(0);
-            }
-
-            konsole();
-            musicplayerbuttons();
-            tastatur();
+    private void debugfenster() {
+        s1.runter();
+        s2.runter();
+        if(gametick>1000){
+            debugFenster.loescheAlles();
+            gametick=0;
+            drawlines();
+            s1.hoch();
+            s2.hoch();
         }
-        Sys.beenden();
+        s1.bewegeBis(gametick, 300-spieler.getvhor());
+        s2.bewegeBis(gametick, 150-2.5*spieler.getbeta());
     }
 
     private void konsole() {
@@ -347,6 +351,9 @@ public class Main
                     break;
                 case 'd':
                     spieler.steer(0.5);
+                    break;
+                case 'h':
+                    spieler.setx(spieler.getx()+10);
                     break;
                 case 'q':
                     spieler.steer(-1);

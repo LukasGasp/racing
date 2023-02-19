@@ -16,7 +16,7 @@ public class Player
     public Player()
     {
         // Variablen werden initialisiert
-        x = 0;
+        x = -5000;
         y = 30;
         z = 0;
         winkvertglob = 0;
