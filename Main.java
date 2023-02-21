@@ -10,46 +10,42 @@ import basis.*;
 public class Main
 {   
     // Objekte
-    Landschaft landschaft;
-    Player spieler;
-    Schneemann enemy;
-    Sys sys;
-    Sound ferrari;
-    Clip clip;
-    static Thread musicthread;
-    AudioInputStream inputStream;
-    Random rand;
+    private Landschaft landschaft;
+    private Player spieler;
+    private Clip clip;
+    private static Thread musicthread;
+    private AudioInputStream inputStream;
+    private Random rand;
 
-    Fenster debugFenster;
-    Fenster musicPlayer;
-    Fenster minimap;
-    Bild spielericon;
-    TextFeld nexttrack;
-    TextFeld trackname;
-    TextBereich playing;
-    TextBereich next;
-    Button b1,b2,b3;
-    Stift s1;
-    Stift s2;
-    Stift sm;
+    private Fenster debugFenster;
+    private Fenster musicPlayer;
+    private Fenster minimap;
+    private Bild spielericon;
+    private TextFeld nexttrack;
+    private TextFeld trackname;
+    private TextBereich playing;
+    private TextBereich next;
+    private Button b1,b2,b3;
+    private Stift s1;
+    private Stift s2;
+    private Stift sm;
     // io
 
-    GLTastatur t; // Tastatur
-    GLMaus m;
+    private GLTastatur t; // Tastatur
 
     // Variablen
-    volatile boolean stopthread;
-    boolean musicpaused;
-    boolean running;
-    int gametick;
-    int seite;
-    int buttoncooldown;
-    int schneemannnumber;
-    String currentsong;
+    private volatile boolean stopthread;
+    private boolean musicpaused;
+    private boolean running;
+    private int gametick;
+    private int seite;
+    private int buttoncooldown;
+    private int schneemannnumber;
+    private String currentsong;
 
     // Schneemannliste
-    List<Schneemann> enemylist;
-    List<String> musiklist;
+    private List<Schneemann> enemylist;
+    private List<String> musiklist;
 
     public static void main(String[] args)
     {
@@ -201,7 +197,7 @@ public class Main
             spieler.bewegdich();
             spielericon.setzePosition(spieler.getx()/50+200, spieler.getz()/50+200);
             spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.getwinkhorglob()); //ich liebe diesen methodennamen
-            checksnowmen();
+            checkSchneemann();
 
             if(spieler.kollision()){
                 spieler.setx(0);
@@ -230,7 +226,7 @@ public class Main
         s1.setzeFarbe(Farbe.ROT);
     }
 
-    private void checksnowmen() {
+    private void checkSchneemann() {
         //Es wird geguckt ob die Schneemänner in einem Radius von 50 vom Auto sind
         enemylist.toFirst();
         while (enemylist.hasAccess()) {
@@ -352,9 +348,6 @@ public class Main
                 case 'd':
                     spieler.steer(0.5);
                     break;
-                case 'h':
-                    spieler.setx(spieler.getx()+10);
-                    break;
                 case 'q':
                     spieler.steer(-1);
                     break;
@@ -371,7 +364,7 @@ public class Main
                         spieler.setpower(spieler.power-10000);
                     }
                     break;
-                case ' ': //programm wird per "@" geschlossen
+                case ' ':
                     spieler.bremse();
                     break;
                 case '+':
