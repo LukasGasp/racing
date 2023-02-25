@@ -8,7 +8,7 @@ public class Player
     private double y;
     private double z;
     private int winkvertglob,masse;
-    private double ywinkel,vvert,vside,vhor,horwinkelbewegung,beta,zeit,temp,winkhorglob;
+    private double ywinkel,vvert,vside,horizontalvelocity,horwinkelbewegung,beta,zeit,temp,winkhorglob;
     private long letztezeit,diesezeit;
     private boolean bodenkontakt, bremsen;
     
@@ -21,7 +21,7 @@ public class Player
         z = 0;
         winkvertglob = 0;
         winkhorglob = 0;
-        vhor = 100;
+        horizontalvelocity = 100;
         vvert = 0;
         vside = 0;
         masse = 1000;
@@ -72,17 +72,17 @@ public class Player
 
     public double bremsrate() {
         //Experimentell herausgefundende Werte
-        if (vhor>110) {
+        if (horizontalvelocity>110) {
             temp=0.002;
-        } else if(vhor>100) {
+        } else if(horizontalvelocity>100) {
             temp=0.005;
-        } else if(vhor>70) {
+        } else if(horizontalvelocity>70) {
             temp=0.01;
-        } else if(vhor>50) {
+        } else if(horizontalvelocity>50) {
             temp=0.02;
-        } else if(vhor>30) {
+        } else if(horizontalvelocity>30) {
             temp=0.03;
-        } else if(vhor<8){
+        } else if(horizontalvelocity<8){
             temp=0.0001;  //Bugverhinderung
         } else {
             temp=0.1;
@@ -91,17 +91,32 @@ public class Player
     }
     
     private void neuehorgesch(){
-        vhor = Math.sqrt(Math.pow(vhor,2)+Math.pow(vside,2));
+        horizontalvelocity = Math.sqrt(Math.pow(horizontalvelocity,2)+Math.pow(vside,2));
         //Beta-Berechnung:
-        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/vhor)) 
-                                                + ((Math.abs(beta)<1) 
-                                                    ?(beta/15) 
-                                                    :((Math.abs(beta)<17&&bodenkontakt) 
-                                                        ? Math.signum(beta)/4 
-                                                        : 0)) 
-                                                + ((vhor<160&&bodenkontakt)
-                                                    ?Math.signum(beta)/4
-                                                    :0);
+
+        double betaacceleration;
+
+        if ((Math.abs(beta)<1)) {
+
+            betaacceleration = (beta/15);
+
+        } else {
+            
+            if (Math.abs(beta)<17&&bodenkontakt) {
+                betaacceleration = Math.signum(beta)/4;
+            } else {
+                betaacceleration = 0;
+            }
+
+        }
+
+        if (horizontalvelocity<160&&bodenkontakt) {
+            betaacceleration = betaacceleration + Math.signum(beta)/4;
+        }
+
+        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/horizontalvelocity)) 
+                                                + betaacceleration ;
+                                                
         beta = winkhorglob - horwinkelbewegung;
         //Beta-Berechnung Ende
         vside = 0;
@@ -111,13 +126,13 @@ public class Player
     
     private double horbeschl(){
         return (    ((bremsen)?0:power())
-                    - 0.30625 * Math.pow(vhor,2)
+                    - 0.30625 * Math.pow(horizontalvelocity,2)
                     )
                     /masse;
     }
 
     public double power() {
-        return power * Math.exp(-vhor/200);
+        return power * Math.exp(-horizontalvelocity/200);
         
     }
     
@@ -135,7 +150,7 @@ public class Player
             else return true;
         }
         else{
-            if(vhor<5||beta<0.5&&beta>-0.5) return true;
+            if(horizontalvelocity<5||beta<0.5&&beta>-0.5) return true;
             else return false;
         }
     }
@@ -150,23 +165,27 @@ public class Player
         bodenkontakt = abgehoben();
         vvert = 0;
         
-        vhor = (vhor 
-                + ( (bodenkontakt)
-                    ? (Math.abs(Math.cos(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)) 
-                    : 0) 
-                - ( Math.abs(Math.sin(Math.toRadians(beta))))*2
+        double acceleration = ((bodenkontakt)
+                            ? (Math.abs(Math.cos(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)) 
+                            : 0);
+
+
+
+        horizontalvelocity = (horizontalvelocity 
+                + acceleration
+                - ( Math.abs(Math.sin(Math.toRadians(beta)))) * 2
                 - ( Math.abs(Math.sin(Math.toRadians(beta/2))) * horbeschl() * (zeit/1000)))
                 - 200 * ((bremsen)?bremsrate():0)
                 ;
 
-        if(vhor<0.00001&&vhor>-1)vhor=0.00001;
+        if (horizontalvelocity<0.00001&&horizontalvelocity>-1) horizontalvelocity=0.00001;
         vside = vside + sidebeschl()*(zeit/1000); 
         
         neuehorgesch();
         
-        bewegezu(x + Math.cos(Math.toRadians(horwinkelbewegung))*vhor*(zeit/1000),
+        bewegezu(x + Math.cos(Math.toRadians(horwinkelbewegung))*horizontalvelocity*(zeit/1000),
         y + vvert*(zeit/1000),
-        z  + Math.sin(Math.toRadians(horwinkelbewegung))*vhor*(zeit/1000)
+        z  + Math.sin(Math.toRadians(horwinkelbewegung))*horizontalvelocity*(zeit/1000)
         ); //Die eigentliche Bewegung der Kamera
         
         kamera0.setzeBlickpunkt(x + Math.cos(Math.toRadians(winkhorglob)) * Math.cos(Math.toRadians(winkvertglob)) *100,
@@ -181,7 +200,7 @@ public class Player
     //Winkel der Kamera Methoden
     
     public void steer(double winkel) {
-        if(vhor<10)return;
+        if(horizontalvelocity<10)return;
         yaw(winkel);
     }
 
@@ -233,8 +252,8 @@ public class Player
         return  vvert;
     }
     
-    public double getvhor(){
-        return  vhor;
+    public double gethorizontalvelocity(){
+        return  horizontalvelocity;
     }
     
      public double getbeta(){
@@ -272,19 +291,19 @@ public class Player
     
     
     //<s>ein</s> zwei setter
-    public void setpower(double temp){
-        power = temp;
+    public void setpower(double power){
+        this.power = power;
     }
 
-    public void setvhor(double temp) {
-        vhor = temp;
+    public void sethorizontalvelocity(double horizontalvelocity) {
+        this.horizontalvelocity = horizontalvelocity;
     }
     
-    public void setx(double temp) {
-        x = temp;
+    public void setx(double x) {
+        this.x = x;
     }
     
-    public void setz(double temp) {
-        z = temp;
+    public void setz(double z) {
+        this.z = z;
     }
 }

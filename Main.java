@@ -203,7 +203,7 @@ public class Main
                 spieler.setx(0);
                 spieler.setz(0);
                 spieler.setpower(0);
-                spieler.setvhor(0);
+                spieler.sethorizontalvelocity(0);
             }
 
             konsole();
@@ -230,20 +230,17 @@ public class Main
         //Es wird geguckt ob die Schneemänner in einem Radius von 50 vom Auto sind
         enemylist.toFirst();
         while (enemylist.hasAccess()) {
-            if(spieler.getx() <= enemylist.getContent().getx()+50
-            && spieler.getx() >= enemylist.getContent().getx()-50
-            && spieler.getz() <= enemylist.getContent().getz()+50
-            && spieler.getz() >= enemylist.getContent().getz()-50){
-                spieler.setvhor(0);
+            if( Math.abs(spieler.getx() - enemylist.getContent().getx()) <= 50
+            && Math.abs(spieler.getz() - enemylist.getContent().getz()) <= 50){
+                spieler.sethorizontalvelocity(0);
                 deletecurrentSchneemann();
             }
-            double IXZI = Math.sqrt(
-                                Math.pow(enemylist.getContent().getx()-spieler.getx(), 2)
-                              + Math.pow(enemylist.getContent().getz()-spieler.getz(), 2));
-            double IZI = enemylist.getContent().getz()-spieler.getz();
-            double IXI = enemylist.getContent().getx()-spieler.getx();
-            double angle = Math.toDegrees(Math.asin(IZI/IXZI));
-            enemylist.getContent().drehebis((IXI>=0)?angle-90:180-angle-90);
+            double dz = enemylist.getContent().getz()-spieler.getz();
+            double dx = enemylist.getContent().getx()-spieler.getx();
+            double distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
+            double angle = Math.toDegrees(Math.asin(dz/distance));
+            
+            enemylist.getContent().drehebis((dx>=0)?angle-90:180-angle-90);
             enemylist.next();
         }
     }
@@ -283,7 +280,7 @@ public class Main
             s1.hoch();
             s2.hoch();
         }
-        s1.bewegeBis(gametick, 300-spieler.getvhor());
+        s1.bewegeBis(gametick, 300-spieler.gethorizontalvelocity());
         s2.bewegeBis(gametick, 150-2.5*spieler.getbeta());
     }
 
@@ -311,7 +308,7 @@ public class Main
                 System.out.println("Power:");
                 System.out.println(spieler.getpower());
                 System.out.println("Horizontal/temp:");
-                System.out.println(spieler.getvhor()+ " " +spieler.gettemp());
+                System.out.println(spieler.gethorizontalvelocity()+ " " +spieler.gettemp());
                 break;
 
                 case 2:
