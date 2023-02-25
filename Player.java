@@ -2,15 +2,24 @@ import GLOOP.*;
 public class Player
 {   
     // Objekte
-    GLKamera kamera0;
+    GLKamera kamera;
     
     private double x;
     private double y;
     private double z;
-    private int winkvertglob,masse;
-    private double ywinkel,vvert,vside,horizontalvelocity,horwinkelbewegung,beta,zeit,temp,winkhorglob;
-    private long letztezeit,diesezeit;
-    private boolean bodenkontakt, bremsen;
+    private int winkvertglob;
+    private int masse;
+    private double ywinkel;
+    private double vvert;
+    private double perpendicularvelocity;
+    private double horizontalvelocity;
+    private double horizontalmovementangle;
+    private double beta;
+    private double temp;
+    private double horizontalcameraangle;
+    private long letztezeit;
+    private boolean bodenkontakt;
+    private boolean bremsen;
     
     double power;
     public Player()
@@ -20,37 +29,44 @@ public class Player
         y = 30;
         z = 0;
         winkvertglob = 0;
-        winkhorglob = 0;
+        horizontalcameraangle = 0;
         horizontalvelocity = 100;
         vvert = 0;
-        vside = 0;
+        perpendicularvelocity = 0;
         masse = 1000;
         power = 100000;
-        horwinkelbewegung = 0;
+        horizontalmovementangle = 0;
         bodenkontakt = true;
         letztezeit = System.currentTimeMillis();
         
         // Objekte erzeugen        
         // Kamera:
-        kamera0 = new GLKamera(1000,1000);
+        kamera = new GLKamera(1000,1000);
         
-        kamera0.setzePosition(x, y, z);
-        kamera0.zeigeAchsen(true);   
-        kamera0.setzeBlickpunkt(0, 100, 0);
+        kamera.setzePosition(x, y, z);
+        kamera.zeigeAchsen(true);   
+        kamera.setzeBlickpunkt(0, 100, 0);
 
-        
-        //kamera0.setzeStereomodus(true); // Stereo!
+
+        //Jetzt neu: Veränderte Variablennamen
+        //horwinkelbewegung = horizontalmovementangle
+        //vhor = horizontalvelocity
+        //vside = perpendicularvelocity
+        //sidebeschl = perpendicularacc
+        //winkhorglob = horizontalcameraangle
+
+        //kamera.setzeStereomodus(true); // Stereo!
     }
     
     public void bewegezu(double tempx, double tempy, double tempz){
-        kamera0.setzePosition(tempx, tempy, tempz);
+        kamera.setzePosition(tempx, tempy, tempz);
         x = tempx;
         y = tempy;
         z = tempz;
     }
     
     public void bewegeum(double tempx, double tempy, double tempz){
-        kamera0.setzePosition(x+tempx, y+tempy, z+tempz);
+        kamera.setzePosition(x+tempx, y+tempy, z+tempz);
         x = x+tempx;
         y = y+tempy;
         z = z+tempz;
@@ -58,10 +74,10 @@ public class Player
     }
     
     public void gehe(double amount){
-        kamera0.vor(amount);
-        x=kamera0.gibX();
-        y=kamera0.gibY();
-        z=kamera0.gibZ();
+        kamera.vor(amount);
+        x=kamera.gibX();
+        y=kamera.gibY();
+        z=kamera.gibZ();
         
     }
 
@@ -91,7 +107,7 @@ public class Player
     }
     
     private void neuehorgesch(){
-        horizontalvelocity = Math.sqrt(Math.pow(horizontalvelocity,2)+Math.pow(vside,2));
+        horizontalvelocity = Math.sqrt(Math.pow(horizontalvelocity,2)+Math.pow(perpendicularvelocity,2));
         //Beta-Berechnung:
 
         double betaacceleration;
@@ -102,7 +118,7 @@ public class Player
 
         } else {
             
-            if (Math.abs(beta)<17&&bodenkontakt) {
+            if (Math.abs(beta)<17 && bodenkontakt) {
                 betaacceleration = Math.signum(beta)/4;
             } else {
                 betaacceleration = 0;
@@ -110,16 +126,15 @@ public class Player
 
         }
 
-        if (horizontalvelocity<160&&bodenkontakt) {
+        if (horizontalvelocity<160 && bodenkontakt) {
             betaacceleration = betaacceleration + Math.signum(beta)/4;
         }
 
-        horwinkelbewegung = horwinkelbewegung + Math.toDegrees(Math.atan(vside/horizontalvelocity)) 
-                                                + betaacceleration ;
+        horizontalmovementangle = horizontalmovementangle + Math.toDegrees(Math.atan(perpendicularvelocity/horizontalvelocity)) + betaacceleration ;
                                                 
-        beta = winkhorglob - horwinkelbewegung;
+        beta = horizontalcameraangle - horizontalmovementangle;
         //Beta-Berechnung Ende
-        vside = 0;
+        perpendicularvelocity = 0;
     }
     
     //Fahrzeugphysics Start
@@ -136,9 +151,9 @@ public class Player
         
     }
     
-    private double sidebeschl(){
+    private double perpendicularacc(){
         //Diese Methode dreht die bew. richt. in kam. richt.
-        beta = winkhorglob - horwinkelbewegung;
+        beta = horizontalcameraangle - horizontalmovementangle;
         return (Math.sin(Math.toRadians(beta))*20   
         );
     }
@@ -146,12 +161,10 @@ public class Player
     // Überprüft Bodenkontakt
     private boolean abgehoben(){
         if(bodenkontakt){
-            if( (beta<-45||beta>45)||  beta<-25&&bremsen||beta>25&&bremsen) return false;
-            else return true;
+            return !((beta<-45||beta>45)||  beta<-25&&bremsen||beta>25&&bremsen);
         }
         else{
-            if(horizontalvelocity<5||beta<0.5&&beta>-0.5) return true;
-            else return false;
+            return (horizontalvelocity<5||beta<0.5&&beta>-0.5);
         }
     }
     
@@ -159,8 +172,8 @@ public class Player
     
     public void bewegdich(){ //Flugzeug wird bewegt
         
-        diesezeit = System.currentTimeMillis();
-        zeit = diesezeit - letztezeit; //zeit gibt die zeitlichen abstände zwischen durchgängen an, um die Physik akkurat darzustellen
+        double diesezeit = System.currentTimeMillis();
+        double zeit = diesezeit - letztezeit; //zeit gibt die zeitlichen abstände zwischen durchgängen an, um die Physik akkurat darzustellen
 
         bodenkontakt = abgehoben();
         vvert = 0;
@@ -179,21 +192,21 @@ public class Player
                 ;
 
         if (horizontalvelocity<0.00001&&horizontalvelocity>-1) horizontalvelocity=0.00001;
-        vside = vside + sidebeschl()*(zeit/1000); 
+        perpendicularvelocity = perpendicularvelocity + perpendicularacc()*(zeit/1000); 
         
         neuehorgesch();
         
-        bewegezu(x + Math.cos(Math.toRadians(horwinkelbewegung))*horizontalvelocity*(zeit/1000),
+        bewegezu(x + Math.cos(Math.toRadians(horizontalmovementangle))*horizontalvelocity*(zeit/1000),
         y + vvert*(zeit/1000),
-        z  + Math.sin(Math.toRadians(horwinkelbewegung))*horizontalvelocity*(zeit/1000)
+        z  + Math.sin(Math.toRadians(horizontalmovementangle))*horizontalvelocity*(zeit/1000)
         ); //Die eigentliche Bewegung der Kamera
         
-        kamera0.setzeBlickpunkt(x + Math.cos(Math.toRadians(winkhorglob)) * Math.cos(Math.toRadians(winkvertglob)) *100,
+        kamera.setzeBlickpunkt(x + Math.cos(Math.toRadians(horizontalcameraangle)) * Math.cos(Math.toRadians(winkvertglob)) *100,
                                Math.sin(Math.toRadians(winkvertglob)) * 100 + y, 
-                               z  + Math.sin(Math.toRadians(winkhorglob)) * Math.cos(Math.toRadians(winkvertglob)) *100); //Einstellung des Blickwinkels der Kamera
-        x=kamera0.gibX();
-        y=kamera0.gibY();
-        z=kamera0.gibZ(); //Kamerakoordinaten werden regelmäßig wieder abgefragt
+                               z  + Math.sin(Math.toRadians(horizontalcameraangle)) * Math.cos(Math.toRadians(winkvertglob)) *100); //Einstellung des Blickwinkels der Kamera
+        x=kamera.gibX();
+        y=kamera.gibY();
+        z=kamera.gibZ(); //Kamerakoordinaten werden regelmäßig wieder abgefragt
         letztezeit = System.currentTimeMillis();
     }
     
@@ -206,12 +219,12 @@ public class Player
 
     public void yaw(double winkel){
         
-        winkhorglob = winkhorglob + winkel;
+        horizontalcameraangle = horizontalcameraangle + winkel;
         ywinkel = Math.sin(Math.toRadians(winkvertglob)) * 100 + y;
-        kamera0.setzeBlickpunkt(x+ Math.cos(Math.toRadians(winkhorglob))* Math.cos(Math.toRadians(winkvertglob)) *100,ywinkel, z + Math.sin(Math.toRadians(winkhorglob))* Math.cos(Math.toRadians(winkvertglob))*100);
-        x=kamera0.gibX();
-        y=kamera0.gibY();
-        z=kamera0.gibZ();
+        kamera.setzeBlickpunkt(x+ Math.cos(Math.toRadians(horizontalcameraangle))* Math.cos(Math.toRadians(winkvertglob)) *100,ywinkel, z + Math.sin(Math.toRadians(horizontalcameraangle))* Math.cos(Math.toRadians(winkvertglob))*100);
+        x=kamera.gibX();
+        y=kamera.gibY();
+        z=kamera.gibZ();
     }
 
     //Die methode bleibt weil debuggen
@@ -219,17 +232,16 @@ public class Player
         
         winkvertglob = winkvertglob + (int)winkel;
         ywinkel = Math.sin(Math.toRadians(winkvertglob)) * 100 + y;
-        kamera0.setzeBlickpunkt(x + Math.cos(Math.toRadians(winkhorglob)) * Math.cos(Math.toRadians(winkvertglob)) *100,
+        kamera.setzeBlickpunkt(x + Math.cos(Math.toRadians(horizontalcameraangle)) * Math.cos(Math.toRadians(winkvertglob)) *100,
                                Math.sin(Math.toRadians(winkvertglob)) * 100 + y, 
-                               z  + Math.sin(Math.toRadians(winkhorglob)) * Math.cos(Math.toRadians(winkvertglob)) *100);
-        x=kamera0.gibX();
-        y=kamera0.gibY();
-        z=kamera0.gibZ();
+                               z  + Math.sin(Math.toRadians(horizontalcameraangle)) * Math.cos(Math.toRadians(winkvertglob)) *100);
+        x=kamera.gibX();
+        y=kamera.gibY();
+        z=kamera.gibZ();
     }
 
     public boolean kollision() {
-        if(x<-9997||x>9997||z<-9997||z>9997) return true;
-        else return false;
+        return (x<-9997||x>9997||z<-9997||z>9997);
     }
 
     
@@ -264,13 +276,12 @@ public class Player
         return  temp;
     }
     
-    
-     public double gethorwinkelbewegung(){
-        return  horwinkelbewegung;
+     public double gethorizontalmovementangle(){
+        return  horizontalmovementangle;
     }
     
-     public double getvside(){
-        return  vside;
+     public double getperpendicularvelocity(){
+        return  perpendicularvelocity;
     }
     
     public double getpower(){
@@ -281,12 +292,12 @@ public class Player
         return horbeschl();
     }
     
-    public double getsidebeschl(){
-        return sidebeschl();
+    public double getperpendicularacc(){
+        return perpendicularacc();
     }
 
-    public double getwinkhorglob(){
-        return winkhorglob;
+    public double gethorizontalcameraangle(){
+        return horizontalcameraangle;
     }
     
     

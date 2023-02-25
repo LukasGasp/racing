@@ -13,19 +13,16 @@ public class Main
     private Landschaft landschaft;
     private Player spieler;
     private Clip clip;
-    private static Thread musicthread;
     private AudioInputStream inputStream;
     private Random rand;
 
     private Fenster debugFenster;
-    private Fenster musicPlayer;
-    private Fenster minimap;
     private Bild spielericon;
     private TextFeld nexttrack;
     private TextFeld trackname;
-    private TextBereich playing;
-    private TextBereich next;
-    private Button b1,b2,b3;
+    private Button b1;
+    private Button b2;
+    private Button b3;
     private Stift s1;
     private Stift s2;
     private Stift sm;
@@ -84,7 +81,7 @@ public class Main
     }
 
     private synchronized void playSound(int loops) {
-        musicthread = new Thread(new Runnable() {
+        Thread musicthread = new Thread(new Runnable() {
           public void run() {
             try {
                 stopthread = false;
@@ -106,7 +103,7 @@ public class Main
     }
 
     private void setupminimap() {
-        minimap = new Fenster(400,400);
+        Fenster minimap = new Fenster(400,400);
         minimap.setzePosition(1000, 600);
         sm = new Stift(minimap);
         sm.runter();
@@ -148,15 +145,15 @@ public class Main
     }
 
     private void setupmusicplayer() {
-        musicPlayer = new Fenster("Music",350,100);
+        Fenster musicPlayer = new Fenster("Music",350,100);
         musicPlayer.setzePosition(1000, 400);
         b1 = new Button( 10 ,10, 20, 20, "buttons/play.png");
         b2 = new Button( 10 ,30, 20, 20, "buttons/pause.png");
         b3 = new Button( 10 ,50, 20, 20, "buttons/next.png");
-        playing = new TextBereich(50, 20, 150, 20, musicPlayer);
+        TextBereich playing = new TextBereich(50, 20, 150, 20, musicPlayer);
         playing.entferneRand();
         trackname = new TextFeld(50, 40, 300, 20, musicPlayer);
-        next = new TextBereich(50, 60, 150, 20, musicPlayer);
+        TextBereich next = new TextBereich(50, 60, 150, 20, musicPlayer);
         next.entferneRand();
         nexttrack = new TextFeld(50, 80, 300, 20, musicPlayer);
         
@@ -195,8 +192,8 @@ public class Main
             
             //Kamera wird bewegt
             spieler.bewegdich();
-            spielericon.setzePosition(spieler.getx()/50+200, spieler.getz()/50+200);
-            spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.getwinkhorglob()); //ich liebe diesen methodennamen
+            spielericon.setzePosition(spieler.getx()/50.00+200, spieler.getz()/50.00+200);
+            spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.gethorizontalcameraangle()); //ich liebe diesen methodennamen
             checkSchneemann();
 
             if(spieler.kollision()){
@@ -217,9 +214,9 @@ public class Main
         s1.setzeFarbe(Farbe.HELLGRAU);                
         for (int i = 0; i <= 20; i++) {
             s1.hoch();
-            s1.bewegeBis(i*50, 300);
+            s1.bewegeBis(i*50.00, 300);
             s1.runter();
-            s1.bewegeBis(i*50, 10);
+            s1.bewegeBis(i*50.00, 10);
             s1.schreibe(Integer.toString(i));
         }
         s1.hoch();
@@ -235,8 +232,8 @@ public class Main
                 spieler.sethorizontalvelocity(0);
                 deletecurrentSchneemann();
             }
-            double dz = enemylist.getContent().getz()-spieler.getz();
-            double dx = enemylist.getContent().getx()-spieler.getx();
+            double dz = (double)enemylist.getContent().getz()-spieler.getz();
+            double dx = (double)enemylist.getContent().getx()-spieler.getx();
             double distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dz, 2));
             double angle = Math.toDegrees(Math.asin(dz/distance));
             
@@ -248,14 +245,14 @@ public class Main
     private Schneemann newSchneemann(int min, int max) {
         int x = min + rand.nextInt(Math.abs(min)+max);
         int z = min + rand.nextInt(Math.abs(min)+max);
-        sm.kreis(x/50+200, z/50+200, 1);
+        sm.kreis(x/50.00+200, z/50.00+200, 1);
         return new Schneemann(x,30,z);
     }
 
     private void deletecurrentSchneemann() {
         sm.setzeFarbe(Farbe.WEISS);
         sm.setzeLinienBreite(3);
-        sm.rechteck(enemylist.getContent().getx()/50+198, enemylist.getContent().getz()/50+198, 4, 4);
+        sm.rechteck(enemylist.getContent().getx()/50.00+198, enemylist.getContent().getz()/50.00+198, 4, 4);
         sm.setzeLinienBreite(1);
         sm.setzeFarbe(Farbe.BLAU);
         enemylist.getContent().delete();
@@ -315,7 +312,7 @@ public class Main
                 System.out.println("Beschleunigungen:");
                 System.out.println();
                 System.out.println("Horizonatal / Seitlich:");
-                System.out.println(spieler.gethorbeschl()+ " " + spieler.getsidebeschl());
+                System.out.println(spieler.gethorbeschl()+ " " + spieler.getperpendicularacc());
                 System.out.println();
                 break;
 
@@ -324,7 +321,7 @@ public class Main
                 System.out.println("Beta");
                 System.out.println(spieler.getbeta());
                 System.out.println(" Horizonatal:");
-                System.out.println(spieler.gethorwinkelbewegung());
+                System.out.println(spieler.gethorizontalmovementangle());
                 break;
 
                 default:
@@ -384,13 +381,13 @@ public class Main
     }
 
     private void musicplayerbuttons() {
-        if(b1.pressed()&&buttoncooldown==0&&musicpaused==true)
+        if(b1.pressed()&&buttoncooldown==0&&musicpaused)
             {
                 musicpaused = false;
                 setupaudio(currentsong, 1);
                 buttoncooldown++;
             }
-        if(b2.pressed()&&buttoncooldown==0&&musicpaused==false)
+        if(b2.pressed()&&buttoncooldown==0&&!musicpaused)
             {
                 stopthread = true;
                 musicpaused = true;

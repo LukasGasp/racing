@@ -2,14 +2,19 @@ import GLOOP.*;
 public class Landschaft
 {
     //objekte werden erzeugt
-    private GLLicht licht1,licht2;
+    private GLLicht licht1;
+    private GLLicht licht2;
     private GLBoden boden;
     private GLHimmel himmel;
-    private Schneemann schneemann1,schneemann2;
+    private Schneemann schneemann1;
+    private Schneemann schneemann2;
     private GLTextur textur;  
     private GLTextur himmeltextur;
     private GLTextur wandtexture;
-    private GLQuader wand1,wand2,wand3,wand4;
+    private GLQuader wand1;
+    private GLQuader wand2;
+    private GLQuader wand3;
+    private GLQuader wand4;
     
     
     public Landschaft()
