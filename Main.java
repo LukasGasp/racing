@@ -159,6 +159,7 @@ public class Main
         
         musiklist = new List<>();
         musiklist.append("racing.wav");
+        musiklist.append("hotline-bling.wav");
         musiklist.append("ac-dc-highway-to-hell-official-video.wav");
         musiklist.append("rankka-insane.wav");
         musiklist.append("herzbeben.wav");
@@ -384,6 +385,7 @@ public class Main
         if(b1.pressed()&&buttoncooldown==0&&musicpaused)
             {
                 musicpaused = false;
+                System.out.println(currentsong);
                 setupaudio(currentsong, 1);
                 buttoncooldown++;
             }
