@@ -41,7 +41,7 @@ public class Main
     private int buildingnumber;
     private String currentsong;
 
-    // Schneemannliste
+    //Listen
     private List<Schneemann> enemylist;
     private List<String> musiklist;
     private List<building> buildinglist;
@@ -276,10 +276,10 @@ public class Main
         return new Schneemann(x,30,z);
     }
     
-    private Schneemann newBuilding(int min, int max) {
+    private Building newBuilding(int min, int max) {
         int x = min + rand.nextInt(Math.abs(min)+max);
         int z = min + rand.nextInt(Math.abs(min)+max);
-        return new building(x,30,z);
+        return new Building(x,30,z);
     }
 
     private void deletecurrentSchneemann() {
