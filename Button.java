@@ -1,4 +1,5 @@
 import basis.*;
+import javax.swing.*;
 
 public class Button {
 
@@ -8,6 +9,11 @@ public class Button {
     Maus m;
 
     public Button(int x, int y, int mx, int my, String pfad){
+        
+        BufferedImage myPicture = ImageIO.read(new File(pfad));
+        JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+        add(picLabel);
+        
         this.x = x;
         this.y = y;
         this.mx = mx;
