@@ -38,11 +38,13 @@ public class Main
     private int seite;
     private int buttoncooldown;
     private int schneemannnumber;
+    private int buildingnumber;
     private String currentsong;
 
     // Schneemannliste
     private List<Schneemann> enemylist;
     private List<String> musiklist;
+    private List<building> buildinglist;
 
     public static void main(String[] args)
     {
@@ -61,9 +63,14 @@ public class Main
         setupdebugfenster();
         setupmusicplayer();
         schneemannnumber = 50;
+        buildingnumber = 10;
         enemylist = new List<>();
         for (int i = 0; i < schneemannnumber; i++) { // Populate List
             enemylist.append(newSchneemann(-10000, 10000));
+        }
+        buildinglist = new List<>();
+        for (int i = 0; i < buildingnumber; i++) { // Populate List
+            buildinglist.append(newBuilding(-10000, 10000));
         }
         fuehreaus();
     }
@@ -178,6 +185,30 @@ public class Main
         musicpaused = false;
     }
 
+    private void kollision(){
+        
+        buildinglist.toFirst();
+        while (buildinglist.hasAccess()) {
+            if( Math.abs(spieler.getx() - buildinglist.getContent().getx()) <= 50
+            && Math.abs(spieler.getz() - buildinglist.getContent().getz()) <= 50){
+                spieler.setx(0);
+                spieler.setz(0);
+                spieler.setpower(0);
+                spieler.sethorizontalvelocity(0);
+            }
+            buildinglist.next();
+        }
+        
+        if(spieler.kollision()){
+            spieler.setx(0);
+            spieler.setz(0);
+            spieler.setpower(0);
+            spieler.sethorizontalvelocity(0);
+        }
+    
+    }
+    
+    
     private void fuehreaus(){
         running = true;
         System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
@@ -197,13 +228,8 @@ public class Main
             spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.gethorizontalcameraangle()); //ich liebe diesen methodennamen
             checkSchneemann();
 
-            if(spieler.kollision()){
-                spieler.setx(0);
-                spieler.setz(0);
-                spieler.setpower(0);
-                spieler.sethorizontalvelocity(0);
-            }
-
+            
+            kollision();
             konsole();
             musicplayerbuttons();
             tastatur();
@@ -248,6 +274,12 @@ public class Main
         int z = min + rand.nextInt(Math.abs(min)+max);
         sm.kreis(x/50.00+200, z/50.00+200, 1);
         return new Schneemann(x,30,z);
+    }
+    
+    private Schneemann newBuilding(int min, int max) {
+        int x = min + rand.nextInt(Math.abs(min)+max);
+        int z = min + rand.nextInt(Math.abs(min)+max);
+        return new building(x,30,z);
     }
 
     private void deletecurrentSchneemann() {
