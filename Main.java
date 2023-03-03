@@ -1,10 +1,14 @@
 import java.util.Random;
 
+import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.*;
+import java.io.File;
+import java.io.IOException;
 
 import GLOOP.*;
 import basis.*;
@@ -19,6 +23,7 @@ public class Main
     private Random rand;
 
     private Fenster debugFenster;
+    private JFrame intro;
     private Bild spielericon;
     JLabel trackname;
     JLabel nexttrack;
@@ -54,17 +59,44 @@ public class Main
       main.setup();
     }
 
+    private void intro() {
+        intro = new JFrame();
+        intro.setSize(1920,1080);
+
+        Image importedImage = null;
+        try {
+            importedImage = ImageIO.read(new File("racing.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        BufferedImage buffered = (BufferedImage) importedImage;
+        int scaleX = (int) (1920);
+        int scaleY = (int) (1080);
+        Image finalImage = buffered.getScaledInstance(scaleX, scaleY, Image.SCALE_SMOOTH);
+
+        JLabel picLabel = new JLabel(new ImageIcon(finalImage), JLabel.CENTER);
+
+        intro.add(picLabel);
+        intro.setVisible(true);
+    }
+
     private void setup()
     {   
-        
+        intro();
+        Hilfe.pause(1000);
         spieler = new Player();
         landschaft = new Landschaft();
         t = new GLTastatur();
         rand = new Random();
         
         setupminimap();
+        intro.toFront();
         setupdebugfenster();
+        intro.toFront();
         setupmusicplayer();
+        intro.toFront();
+        Hilfe.pause(1000);
+        
         schneemannnumber = 50;
         buildingnumber = 10;
         enemylist = new List<>();
@@ -168,6 +200,7 @@ public class Main
         musiklist.append("herzbeben.wav");
 
         JDialog musicframe = new JDialog();
+        musicframe.setUndecorated(true);
         musicframe.setSize(400, 200);
         musicframe.setLocation(1000, 400);
         musicframe.setVisible(true);
@@ -241,6 +274,7 @@ public class Main
     private void fuehreaus(){
         running = true;
         System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
+        intro.dispose();
         while(running){
             Hilfe.pause(20);
             gametick++;
