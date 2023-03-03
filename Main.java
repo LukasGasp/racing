@@ -3,6 +3,8 @@ import java.util.Random;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.swing.*;
+import java.awt.*;
 
 import GLOOP.*;
 import basis.*;
@@ -18,8 +20,8 @@ public class Main
 
     private Fenster debugFenster;
     private Bild spielericon;
-    private TextFeld nexttrack;
-    private TextFeld trackname;
+    JLabel trackname;
+    JLabel nexttrack;
     private Button b1;
     private Button b2;
     private Button b3;
@@ -44,7 +46,7 @@ public class Main
     //Listen
     private List<Schneemann> enemylist;
     private List<String> musiklist;
-    private List<building> buildinglist;
+    private List<Building> buildinglist;
 
     public static void main(String[] args)
     {
@@ -54,6 +56,7 @@ public class Main
 
     private void setup()
     {   
+        
         spieler = new Player();
         landschaft = new Landschaft();
         t = new GLTastatur();
@@ -152,18 +155,11 @@ public class Main
     }
 
     private void setupmusicplayer() {
-        Fenster musicPlayer = new Fenster("Music",350,100);
-        musicPlayer.setzePosition(1000, 400);
+
         b1 = new Button( 10 ,10, 20, 20, "buttons/play.png");
         b2 = new Button( 10 ,30, 20, 20, "buttons/pause.png");
         b3 = new Button( 10 ,50, 20, 20, "buttons/next.png");
-        TextBereich playing = new TextBereich(50, 20, 150, 20, musicPlayer);
-        playing.entferneRand();
-        trackname = new TextFeld(50, 40, 300, 20, musicPlayer);
-        TextBereich next = new TextBereich(50, 60, 150, 20, musicPlayer);
-        next.entferneRand();
-        nexttrack = new TextFeld(50, 80, 300, 20, musicPlayer);
-        
+
         musiklist = new List<>();
         musiklist.append("racing.wav");
         musiklist.append("hotline-bling.wav");
@@ -171,14 +167,47 @@ public class Main
         musiklist.append("rankka-insane.wav");
         musiklist.append("herzbeben.wav");
 
+        JDialog musicframe = new JDialog();
+        musicframe.setSize(400, 200);
+        musicframe.setLocation(1000, 400);
+        musicframe.setVisible(true);
+        
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.fill = GridBagConstraints.HORIZONTAL;
+
+        JPanel leftPanel = new JPanel();
+        leftPanel.setLayout(new GridBagLayout());
+
+        c.gridy = 0;
+        leftPanel.add(b1.add(),c);
+        c.gridy = 1;
+        leftPanel.add(b2.add(),c);
+        c.gridy = 2;
+        leftPanel.add(b3.add(),c);
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new GridBagLayout());
+        
+        c.gridx = 0;
+        c.gridy = 0;
+        
+        centerPanel.add(new JLabel("Now playing:"),c);
         musiklist.toFirst();
-        currentsong = musiklist.getContent();
-        setupaudio(musiklist.getContent(), 1);
-        playing.setzeText("Now playing:");
-        trackname.setzeText(musiklist.getContent());
-        next.setzeText("Next:");
+        trackname = new JLabel(musiklist.getContent());
+        c.gridy = 1;
+        centerPanel.add(trackname,c);
+        c.gridy = 2;
+        centerPanel.add(new JLabel("Next:"),c);
         musiklist.next();
-        nexttrack.setzeText(musiklist.getContent());
+        nexttrack = new JLabel(musiklist.getContent());
+        c.gridy = 3;
+        centerPanel.add(nexttrack,c);
+
+        musicframe.add(leftPanel,BorderLayout.WEST);
+        musicframe.add(centerPanel,BorderLayout.CENTER);
+        musicframe.setVisible(true);
+
 
         buttoncooldown = 0;
         stopthread = false;
@@ -189,8 +218,8 @@ public class Main
         
         buildinglist.toFirst();
         while (buildinglist.hasAccess()) {
-            if( Math.abs(spieler.getx() - buildinglist.getContent().getx()) <= 50
-            && Math.abs(spieler.getz() - buildinglist.getContent().getz()) <= 50){
+            if( Math.abs(spieler.getx() - buildinglist.getContent().getx()) <= 250
+            && Math.abs(spieler.getz() - buildinglist.getContent().getz()) <= 250){
                 spieler.setx(0);
                 spieler.setz(0);
                 spieler.setpower(0);
@@ -414,26 +443,29 @@ public class Main
     }
 
     private void musicplayerbuttons() {
-        if(b1.pressed()&&buttoncooldown==0&&musicpaused)
+        if(b1.getpressed()&&buttoncooldown==0&&musicpaused)
             {
+                b1.setPressed(false);
                 musicpaused = false;
                 System.out.println(currentsong);
                 setupaudio(currentsong, 1);
                 buttoncooldown++;
             }
-        if(b2.pressed()&&buttoncooldown==0&&!musicpaused)
+        if(b2.getpressed()&&buttoncooldown==0&&!musicpaused)
             {
+                b2.setPressed(false);
                 stopthread = true;
                 musicpaused = true;
                 buttoncooldown++;
             }
-        if(b3.pressed()&&buttoncooldown==0)
+        if(b3.getpressed()&&buttoncooldown==0)
             {
-                trackname.setzeText(musiklist.getContent());
+                b3.setPressed(false);
+                trackname.setText(musiklist.getContent());
                 currentsong = musiklist.getContent();
                 musiklist.next();
                 if(musiklist.getContent()==null)musiklist.toFirst();
-                nexttrack.setzeText(musiklist.getContent());
+                nexttrack.setText(musiklist.getContent());
                 buttoncooldown++;
             }
         if(buttoncooldown>0)buttoncooldown++;

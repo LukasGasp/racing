@@ -12,7 +12,7 @@ public class Building{
     this.x = x;
     this.y = y;
     this.z = z;
-    obj = new GLQuader(x,y,z,100,100,100);
+    obj = new GLQuader(x,y,z,500,100,500);
     GLTextur wandtexture = new GLTextur("concrete.jpg");
     obj.setzeTextur(wandtexture);
   }
