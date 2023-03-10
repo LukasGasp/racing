@@ -3,52 +3,61 @@
 - PROJEKTBEZEICHNUNG:             Racing
 - PROJEKTZWECK:                   Informatik Arbeit  
 - VERSION:                        V.0.5.2  
-- WIE IST DAS PROJEKT ZU STARTEN: BlueJ  
+- WIE IST DAS PROJEKT ZU STARTEN: VSCode, nicht vergessen die Bibliotheken korrekt zu importieren  
 - AUTOREN:                        Michael, Lukas  
 - BENUTZERHINWEISE:               Sie müssen <s>fliegen</s> fahren können  
 
+Programmiert mit GLOOP:
+Funktioniert mit etwas Glück auch auf ihrem PC!
+
 <h2>Spielidee:</h2>
 
-Man steuert ein exakt 2000 kg schweres auto, welches eine Kraft von 100000 Newton aufbringen kann.
+Man steuert ein Auto durch eine 10000 mal 10000 Einheiten große Fläche.
+Dieses Auto kann driften.
+Außerdem hat man einen Musikplayer, in dem man Musik pausieren, abspielen und wechseln kann.
+Die im Projekt benutzte Musik wurde aus rein demonstrativen Zwecken in einem privaten Umfeld benutzt. Veröffentlichung und Weitergabe ist aus diesem Grunde NICHT erlaubt.
 
 [Informatik.pdf](https://github.com/LukasGasp/flieger/files/7875854/Informatik.pdf)
 
-Man steuert dieses Auto durch eine traumhafte Schneelandschaft. Um diese spannender zu machen (und den Arbeitsauftrag zu erfüllen) werden Schneemänner zufällig um den Spieler erzeugt. Das erste Element der Liste wird gelöscht und durch Zufall neu um den Spieler platziert. Der neue Scheemann wird ans Ende der Liste gehangen. Im Laufe des Spiels kommen immer mehr Schneemänner dazu. (Bis zu 50). So gibt es Möglichkeit Speedruns zu machen.
+Man steuert dieses Auto durch eine traumhafte Landschaft. Um diese spannender zu machen  werden Schneemänner zufällig um den Spieler erzeugt. Das erste Element der Liste wird gelöscht und durch Zufall neu um den Spieler platziert. Der neue Scheemann wird ans Ende der Liste gehangen. Im Laufe des Spiels kommen immer mehr Schneemänner dazu.
+Außerdem: Blöcke, denen man ausweichen muss!
 
 <h2>Benutzerhinweise</h2>
 
-<s>Bitte 3D Brille tragen.</s>
+Die Steuerung mag einem anfangs etwas komisch vorkommen, da man ziemlich einfach anfängt zu driften. Wir hoffen, dass es nicht zu schlimm ist.
+
+Außerdem gibt es kein traditionelles "Ziel" oder auch "Goal" dieses Spiels, genießen sie einfach ihre Fahrt.
 
 <h2>Steuerung:</h2>
 
-<s>Wir gehen davon aus, dass dem Spieler die Gesetzte der Aerodynamik bekannt sind. Hier eine kurze Erinnerung an Kräfte, welche auf ein Flugzeug wirken:</s>
-
 Motor beschleunigen: o  
 Motor entschleunigen: l  
-Lenken: a - d, q - e
+Lenken: 
+Schwach: a - d, 
+Stark: q - e
 Bremsen: SPACE
 Infos: + / - 
 Programm schließen: z
 
 <h2>Konsole</h2>
 
-**WIR EMPFEHLEN UNBEDINGT DIE KONSOLE OFFEN ZU HALTEN!**  
-Wenn man im Hauptfenster + oder - drückt ändern sich die anezeigten Werte. Es gibt: 
+Wenn man im Hauptfenster + oder - drückt, ändern sich die angezeigten Werte. Es gibt: 
 
 - Koordinaten
 - Geschwindigkeiten
 - Beschleunigungen
 - Winkel
 
-Diese Werte müssen ALLE vom Spieler im Auge behalten werden. Anderfalls kommt es zu einem kritischen Absturz.
+
 
 <h2>Code-Einblick</h2>
-Eine der Funktionen. <s>Natürlich werden hier Gravitation, Auftrieb, Masse, etc. beachtet. Alles ist relativ,</s>
+
+Wir laden sie dazu ein, sich den Code anzusehen.
 
 
 
 <h2>Probleme</h2>
-Eine große Herausforderung war die GLOOP Bibliothek. Diese bietet KEINE möglichkeit die Kamera um ihre eigene Achse zu drehen. (Die rotieren Funktion funktioniert einfach nicht)
-Selbst das Kamera ausrichten bereitete Aufgrund dazu fehlender Funktionen (im Gegensatz zu Objekten) noch größere Probleme.
-Wir würden uns freuen für das nächste Projekt eine andere Bibliothek nutzen zu dürfen. 
-Trotzdem vielen Dank, dass wir von Basis zu Gloop wechseln durften.
+Eine große Herausforderung war die GLOOP Bibliothek. Diese bietet KEINE möglichkeit die Kamera um ihre eigene Achse zu drehen. (Die Rotieren-Funktion funktioniert einfach nicht)
+Selbst das Kamera auszurichten bereitete aufgrund dazu fehlender Funktionen (im Gegensatz zu Objekten) noch größere Probleme.
+Außerdem funktioniert die Bibliothek auf einigen Computern nicht. Woran es genau liegt, bleibt ein Rätsel. Wir hoffen, dass es auf ihrem PC funktioniert.
+Eventuell hat es mit der Reihenfolge der Bibliothek
