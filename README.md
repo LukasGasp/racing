@@ -25,7 +25,7 @@ Außerdem: Blöcke, denen man ausweichen muss!
 
 Die Steuerung mag einem anfangs etwas komisch vorkommen, da man ziemlich einfach anfängt zu driften. Wir hoffen, dass es nicht zu schlimm ist.
 
-Außerdem gibt es kein traditionelles "Ziel" oder auch "Goal" dieses Spiels, genießen sie einfach ihre Fahrt.
+Außerdem gibt es kein traditionelles "Ziel" oder auch "Goal" dieses Spiels, genießen Sie einfach ihre Fahrt.
 
 <h2>Steuerung:</h2>
 
@@ -51,7 +51,7 @@ Wenn man im Hauptfenster + oder - drückt, ändern sich die angezeigten Werte. E
 
 <h2>Code-Einblick</h2>
 
-Wir laden sie dazu ein, sich den Code anzusehen.
+Wir laden Sie dazu ein, sich den Code anzusehen.
 Wir hoffen, dass dieser trotz der eher spärlichen Kommentare verständlich ist.
 
 
@@ -59,6 +59,6 @@ Wir hoffen, dass dieser trotz der eher spärlichen Kommentare verständlich ist.
 Eine große Herausforderung war die GLOOP Bibliothek. Diese bietet KEINE möglichkeit die Kamera um ihre eigene Achse zu drehen. (Die Rotieren-Funktion funktioniert einfach nicht)
 Selbst das Kamera auszurichten bereitete aufgrund dazu fehlender Funktionen (im Gegensatz zu Objekten) noch größere Probleme.
 Außerdem funktioniert die Bibliothek auf einigen Computern nicht. Woran es genau liegt, bleibt ein Rätsel. Wir hoffen, dass es auf ihrem PC funktioniert.
-Eventuell hat es mit der Reihenfolge der importierten Bibliotheken zu tun, versuchen sie es bei Nichtfunktionieren der GLOOP-Bibliothek damit:
+Eventuell hat es mit der Reihenfolge der importierten Bibliotheken zu tun, versuchen Sie es bei Nichtfunktionieren der GLOOP-Bibliothek damit:
 
-[SCREENSHOT](https://github.com/LukasGasp/racing/Screenshot.png)
+[SCREENSHOT](https://github.com/LukasGasp/racing/blob/main/Screenshot.png)
