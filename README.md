@@ -52,7 +52,7 @@ Wenn man im Hauptfenster + oder - drückt, ändern sich die angezeigten Werte. E
 <h2>Code-Einblick</h2>
 
 Wir laden sie dazu ein, sich den Code anzusehen.
-
+Wir hoffen, dass dieser trotz der eher spärlichen Kommentare verständlich ist.
 
 
 <h2>Probleme</h2>
