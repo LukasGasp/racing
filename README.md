@@ -61,4 +61,4 @@ Selbst das Kamera auszurichten bereitete aufgrund dazu fehlender Funktionen (im 
 Außerdem funktioniert die Bibliothek auf einigen Computern nicht. Woran es genau liegt, bleibt ein Rätsel. Wir hoffen, dass es auf ihrem PC funktioniert.
 Eventuell hat es mit der Reihenfolge der importierten Bibliotheken zu tun, versuchen sie es bei Nichtfunktionieren der GLOOP-Bibliothek damit:
 
-[SCREENSHOT](https://github.com/LukasGasp/racing/Screenshot (1724).png)
+[SCREENSHOT](https://github.com/LukasGasp/racing/Screenshot.png)
