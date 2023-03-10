@@ -354,6 +354,7 @@ public class Main
     private Building newBuilding(int min, int max) {
         int x = min + rand.nextInt(Math.abs(min)+max);
         int z = min + rand.nextInt(Math.abs(min)+max);
+        sm.rechteck(x/50.00+195, z/50.00+195, 10,10);
         return new Building(x,30,z);
     }
 
@@ -504,7 +505,7 @@ public class Main
                 musicpaused = true;
                 buttoncooldown++;
             }
-        if(b3.getpressed()&&buttoncooldown==0)
+        if(b3.getpressed()&&buttoncooldown==0&&musicpaused)
             {
                 b3.setPressed(false);
                 trackname.setText(musiklist.getContent());
