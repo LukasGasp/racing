@@ -19,7 +19,7 @@ Die im Projekt benutzte Musik wurde aus rein demonstrativen Zwecken in einem pri
 
 
 Man steuert sein Auto durch eine traumhafte Landschaft. Um diese spannender zu machen, werden Schneemänner zufällig um den Spieler herum erzeugt.  <br>
-Außerdem gibt Betonblöcke, denen man ausweichen muss! <br>
+Außerdem gibt es sogar Betonblöcke, denen man ausweichen muss! <br>
 Bei Kollision mit Blöcken oder der Weltbarriere wird man an die Anfangsposition gesetzt. <br>
 Blöcke, Schneemänner und Weltbarriere werden auf einer Minimap angezeigt. <br>
 
