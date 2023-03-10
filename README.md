@@ -1,13 +1,13 @@
-<h1>Dies ist das Informatik Projekt von Michael und Lukas</h1>
+<h1>Dies ist das Informatik-Projekt von Michael und Lukas</h1>
 
-- PROJEKTBEZEICHNUNG:             Racing
-- PROJEKTZWECK:                   Informatik Abgabe  
-- VERSION:                        V.0.5.2  
-- WIE IST DAS PROJEKT ZU STARTEN: Visual Studio Code, nicht vergessen die Bibliotheken korrekt zu importieren  
-- AUTOREN:                        Michael, Lukas  
-- BENUTZERHINWEISE:               Sie müssen fahren können  
+- <b>PROJEKTBEZEICHNUNG:</b>             Racing
+- <b>PROJEKTZWECK:</b>                   Informatik Abgabe  
+- <b>VERSION:</b>                        V.0.5.2  
+- <b>WIE IST DAS PROJEKT ZU STARTEN:</b> Visual Studio Code, nicht vergessen die Bibliotheken korrekt zu importieren  
+- <b>AUTOREN:</b>                        Michael, Lukas  
+- <b>BENUTZERHINWEISE:</b>               Sie müssen fahren können  
 
-Programmiert mit <b>GLOOP</b>:
+Programmiert mit <b><i>GLOOP</i></b>:
 Funktioniert mit etwas Glück auch auf ihrem PC!
 
 <h2>Spielidee:</h2>
@@ -25,7 +25,7 @@ Blöcke, Schneemänner und Weltbarriere werden auf einer Minimap angezeigt. <br>
 
 Für die Schneemänner, die Blöcke und die Musik wird die Datenstruktur list verwendet. <br>
 Grob zusammengefasst funktioniert die Schneemann-Liste so: <br>
-Ein zufälliges Element der Liste wird gelöscht. Dann wird ein neuer, an zufälliger Position platzierter Scheemann ans Ende der Liste gehangen. Im Laufe des Spiels kommen immer mehr Schneemänner dazu. <br>
+Ein zufälliges Element der Liste wird gelöscht. Dann wird ein neuer, an zufälliger Position platzierter Scheemann an das Ende der Liste gehangen. Im Laufe des Spiels kommen immer mehr Schneemänner dazu. <br>
 
 <h2>Benutzerhinweise</h2>
 
@@ -53,10 +53,10 @@ Außerdem gibt es kein traditionelles "Ziel" oder auch "Goal" dieses Spiels, gen
 
 Wenn man im Hauptfenster + oder - drückt, ändern sich die in der Konsole angezeigten Werte. Es gibt: 
 
-- Koordinaten
-- Geschwindigkeiten
-- Beschleunigungen
-- Winkel
+- <b>Koordinaten</b>
+- <b>Geschwindigkeiten</b>
+- <b>Beschleunigungen</b>
+- <b>Winkel</b>
 
 
 <h2>Code-Einblick</h2>
@@ -66,9 +66,9 @@ Wir hoffen, dass dieser einigermaßen verständlich ist. <br>
 
 
 <h2>Probleme</h2>
-Eine große Herausforderung war die GLOOP Bibliothek. Diese bietet KEINE Möglichkeit die Kamera um ihre eigene Achse zu drehen. (Die Rotieren-Funktion funktioniert grundsätzlich nicht) <br>
+Eine große Herausforderung war die GLOOP Bibliothek. Diese bietet KEINE Möglichkeit die Kamera um ihre eigene Achse zu drehen. <i>(Die Rotieren-Funktion funktioniert grundsätzlich nicht)</i> <br>
 Selbst das Kamera Ausrichten bereitete aufgrund dazu fehlender Funktionen (im Gegensatz zu Objekten) noch größere Probleme. <br>
 Außerdem funktioniert die Bibliothek auf einigen Computern nicht. Woran es genau liegt, bleibt ein Rätsel. Wir hoffen, dass es auf ihrem PC funktioniert. <br>
-Eventuell hat es mit der Reihenfolge der importierten Bibliotheken zu tun, versuchen Sie es bei Nichtfunktionieren der GLOOP-Bibliothek damit: <br>
+Eventuell hat das Problem etwas mit der Reihenfolge der importierten Bibliotheken zu tun; versuchen Sie es bei dem Nichtfunktionieren der GLOOP-Bibliothek damit: <br>
 
-[SCREENSHOT](https://github.com/LukasGasp/racing/blob/main/Screenshot.png)
+<b>[SCREENSHOT](https://github.com/LukasGasp/racing/blob/main/Screenshot.png)</b>
