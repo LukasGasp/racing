@@ -10,13 +10,14 @@ import java.awt.event.ActionListener;
 
 public class Button implements ActionListener{
 
-    JButton button;
-    boolean pressed;
-    int x, y, mx, my;
-    JLabel picLabel;
+    private JButton button;
+    private boolean pressed;
+    private int mx;
+    private int my; //VSCode sagt, die Variablen wuerden nicht benutzt werden
+    private JLabel picLabel;
     
 
-    public Button(int x, int y, int mx, int my, String pfad){
+    public Button(int mx, int my, String pfad){
         pressed = false;
         Image importedImage = null;
         try {
@@ -31,10 +32,6 @@ public class Button implements ActionListener{
 
         picLabel = new JLabel(new ImageIcon(finalImage), JLabel.CENTER);
         picLabel.setVerticalAlignment(JLabel.TOP);
-        this.x = x;
-        this.y = y;
-        this.mx = mx;
-        this.my = my;
         button = new JButton(new ImageIcon(finalImage));
         button.addActionListener(this); 
     }
@@ -46,7 +43,6 @@ public class Button implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == button){
             pressed = true;
-            System.out.println("Button geklickt!");
         }
     } 
 

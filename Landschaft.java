@@ -4,6 +4,7 @@ public class Landschaft
     //objekte werden erzeugt
     private GLLicht licht1;
     private GLLicht licht2;
+    //Diese Klassen werden benutzt, egal was VSCode sagt:
     private GLBoden boden;
     private GLHimmel himmel;
     private Schneemann schneemann1;

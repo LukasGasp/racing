@@ -25,19 +25,21 @@ public class Main
     private Fenster debugFenster;
     private JFrame intro;
     private Bild spielericon;
-    JLabel trackname;
-    JLabel nexttrack;
+    private JLabel trackname;
+    private JLabel nexttrack;
     private Button b1;
     private Button b2;
     private Button b3;
     private Stift s1;
     private Stift s2;
     private Stift sm;
+
     // io
 
     private GLTastatur t; // Tastatur
 
     // Variablen
+    private boolean debug;
     private volatile boolean stopthread;
     private boolean musicpaused;
     private boolean running;
@@ -84,8 +86,6 @@ public class Main
     {   
         intro();
         Hilfe.pause(1000);
-        spieler = new Player();
-        landschaft = new Landschaft();
         t = new GLTastatur();
         rand = new Random();
         
@@ -94,11 +94,17 @@ public class Main
         setupdebugfenster();
         intro.toFront();
         setupmusicplayer();
-        intro.toFront();
-        Hilfe.pause(1000);
         
+
+        spieler = new Player();
+        intro.toFront();
+        Hilfe.pause(500);
+        landschaft = new Landschaft();
+        
+        debug = false;
         schneemannnumber = 50;
         buildingnumber = 10;
+
         enemylist = new List<>();
         for (int i = 0; i < schneemannnumber; i++) { // Populate List
             enemylist.append(newSchneemann(-10000, 10000));
@@ -146,6 +152,7 @@ public class Main
 
     private void setupminimap() {
         Fenster minimap = new Fenster(400,400);
+        minimap.setzeTitel("Minimap");
         minimap.setzePosition(1000, 600);
         sm = new Stift(minimap);
         sm.runter();
@@ -164,6 +171,7 @@ public class Main
 
     private void setupdebugfenster() {
         debugFenster = new Fenster("DEBUG",1000,300);
+        debugFenster.setzeSichtbar(debug);
         debugFenster.setzePosition(1000, 0);
         gametick = 0;
         s1 = new Stift(debugFenster);
@@ -188,9 +196,9 @@ public class Main
 
     private void setupmusicplayer() {
 
-        b1 = new Button( 10 ,10, 20, 20, "buttons/play.png");
-        b2 = new Button( 10 ,30, 20, 20, "buttons/pause.png");
-        b3 = new Button( 10 ,50, 20, 20, "buttons/next.png");
+        b1 = new Button(20, 20, "buttons/play.png");
+        b2 = new Button(20, 20, "buttons/pause.png");
+        b3 = new Button(20, 20, "buttons/next.png");
 
         musiklist = new List<>();
         musiklist.append("racing.wav");
@@ -276,26 +284,30 @@ public class Main
         System.out.println("Im Spiel + / - drücken, um durch Infos zu stöbern.");
         intro.dispose();
         while(running){
-            Hilfe.pause(20);
-            gametick++;
-            debugfenster();
             
-            //in zufälligen abständen werden schneemänner zufällig entfernt
+            gametick++;
+            if(debug){
+                debugfenster();
+            }
+            
+            //in zufälligen zeitlichen Abständen werden Schneemänner zufällig entfernt
             if(rand.nextInt(1000) == 0){
                 deleterandomSchneemann(rand);
             }
             
             //Kamera wird bewegt
             spieler.bewegdich();
-            spielericon.setzePosition(spieler.getx()/50.00+200, spieler.getz()/50.00+200);
-            spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.gethorizontalcameraangle()); //ich liebe diesen methodennamen
-            checkSchneemann();
+            spielericon.setzePosition(
+                            spieler.getx()/50.00 + 200 - spielericon.breite()/2.00, 
+                            spieler.getz()/50.00 + 200 - spielericon.hoehe()/2.00);
+            spielericon.setzeBildWinkelOhneGroessenAnpassung(-spieler.gethorizontalcameraangle());
 
-            
+            checkSchneemann();
             kollision();
             konsole();
             musicplayerbuttons();
             tastatur();
+            Hilfe.pause(20);
         }
         Sys.beenden();
     }

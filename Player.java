@@ -2,7 +2,7 @@ import GLOOP.*;
 public class Player
 {   
     // Objekte
-    GLKamera kamera;
+    GLKamera kamera; //Dieses Objekt darf nicht private sein
     
     private double x;
     private double y;
@@ -30,32 +30,33 @@ public class Player
         z = 0;
         winkvertglob = 0;
         horizontalcameraangle = 0;
-        horizontalvelocity = 100;
+        horizontalvelocity = 10;
         vvert = 0;
         perpendicularvelocity = 0;
         masse = 1000;
-        power = 100000;
+        power = 0;
         horizontalmovementangle = 0;
         bodenkontakt = true;
-        letztezeit = System.currentTimeMillis();
+        
         
         // Objekte erzeugen        
         // Kamera:
         kamera = new GLKamera(1000,1000);
         
         kamera.setzePosition(x, y, z);
-        kamera.zeigeAchsen(true);   
+        kamera.zeigeAchsen(false);   
         kamera.setzeBlickpunkt(0, 100, 0);
 
 
         //Jetzt neu: Veränderte Variablennamen
+        //Die folgenden Zeilen sind Orientierungshilfen fuer uns
         //horwinkelbewegung = horizontalmovementangle
         //vhor = horizontalvelocity
         //vside = perpendicularvelocity
         //sidebeschl = perpendicularacc
         //winkhorglob = horizontalcameraangle
 
-        //kamera.setzeStereomodus(true); // Stereo!
+        letztezeit = System.currentTimeMillis();
     }
     
     public void bewegezu(double tempx, double tempy, double tempz){
