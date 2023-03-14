@@ -7,8 +7,6 @@ public class Landschaft
     //Diese Klassen werden benutzt, egal was VSCode sagt:
     private GLBoden boden;
     private GLHimmel himmel;
-    private Schneemann schneemann1;
-    private Schneemann schneemann2;
     private GLTextur textur;  
     private GLTextur himmeltextur;
     private GLTextur wandtexture;
@@ -34,13 +32,13 @@ public class Landschaft
         himmel = new GLHimmel(himmeltextur);
         
         wandtexture = new GLTextur("concrete.jpg");
-        wand1 = new GLQuader(0, 0, 10000, 20000, 200, 10);
+        wand1 = new GLQuader(0, 0, 10000, 20000, 1000, 10);
         wand1.setzeTextur(wandtexture);
-        wand2 = new GLQuader(10000, 0, 0, 10, 200, -20000);
+        wand2 = new GLQuader(10000, 0, 0, 10, 1000, -20000);
         wand2.setzeTextur(wandtexture);
-        wand3 = new GLQuader(-10000, 0, 0, 10, 200, 20000);
+        wand3 = new GLQuader(-10000, 0, 0, 10, 1000, 20000);
         wand3.setzeTextur(wandtexture);
-        wand4 = new GLQuader(0, 0, -10000, -20000, 200, 10);
+        wand4 = new GLQuader(0, 0, -10000, -20000, 1000, 10);
         wand4.setzeTextur(wandtexture);
     }
     

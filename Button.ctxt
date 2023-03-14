@@ -1,0 +1,13 @@
+#BlueJ class context
+comment0.target=Button
+comment1.params=mx\ my\ pfad
+comment1.target=Button(int,\ int,\ java.lang.String)
+comment2.params=
+comment2.target=javax.swing.JButton\ add()
+comment3.params=e
+comment3.target=void\ actionPerformed(java.awt.event.ActionEvent)
+comment4.params=pressed
+comment4.target=void\ setPressed(boolean)
+comment5.params=
+comment5.target=boolean\ getpressed()
+numComments=6

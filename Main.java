@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
@@ -64,6 +65,8 @@ public class Main
     private void intro() {
         intro = new JFrame();
         intro.setSize(1920,1080);
+        intro.setAlwaysOnTop(true);
+        intro.setUndecorated(true);
 
         Image importedImage = null;
         try {
@@ -81,10 +84,16 @@ public class Main
         intro.add(picLabel);
         intro.setVisible(true);
     }
-
+    
+    
     private void setup()
     {   
         intro();
+        
+        // CMD Output verhindern
+        //System.setOut(null);   Crasht
+        //System.setErr(null);   Crasht
+        
         Hilfe.pause(1000);
         t = new GLTastatur();
         rand = new Random();
@@ -103,7 +112,7 @@ public class Main
         
         debug = false;
         schneemannnumber = 50;
-        buildingnumber = 10;
+        buildingnumber = 50;
 
         enemylist = new List<>();
         for (int i = 0; i < schneemannnumber; i++) { // Populate List
@@ -348,7 +357,9 @@ public class Main
         int x = min + rand.nextInt(Math.abs(min)+max);
         int z = min + rand.nextInt(Math.abs(min)+max);
         sm.kreis(x/50.00+200, z/50.00+200, 1);
-        return new Schneemann(x,30,z);
+        Schneemann neu = new Schneemann(x,30,z);
+        if(rand.nextInt(10)<=1)neu.dreheopferum();
+        return neu;
     }
     
     private Building newBuilding(int min, int max) {

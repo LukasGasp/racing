@@ -78,9 +78,9 @@ public class Schneemann
         auge1.drehe(0, -w, 0);
         auge2.drehe(0, -w, 0);
         kegel.drehe(0, -w, 0);
-        auge1.setzePosition(x + Math.sin(Math.toRadians(winkel + 8.44)) * 10 , y + 73.00 , z - Math.cos(Math.toRadians(winkel + 8.44)) * 10);
-        auge2.setzePosition(x + Math.sin(Math.toRadians(winkel - 8.44)) * 10 , y + 73.00 , z - Math.cos(Math.toRadians(winkel - 8.44)) * 10);
-        kegel.setzePosition(x + Math.sin(Math.toRadians(winkel)) * 10, y + 70.00 , z - Math.cos(Math.toRadians(winkel)) * 10);
+        auge1.setzePosition(x + Math.sin(Math.toRadians(winkel + 8.44)) * 10 , auge1.gibY() , z - Math.cos(Math.toRadians(winkel + 8.44)) * 10);
+        auge2.setzePosition(x + Math.sin(Math.toRadians(winkel - 8.44)) * 10 , auge2.gibY() , z - Math.cos(Math.toRadians(winkel - 8.44)) * 10);
+        kegel.setzePosition(x + Math.sin(Math.toRadians(winkel)) * 10, kegel.gibY() , z - Math.cos(Math.toRadians(winkel)) * 10);
     }
 
     public void drehebis(double w) {
@@ -89,9 +89,9 @@ public class Schneemann
         auge1.drehe(0, -deltaw, 0);
         auge2.drehe(0, -deltaw, 0);
         kegel.drehe(0, -deltaw, 0);
-        auge1.setzePosition(x + Math.sin(Math.toRadians(winkel + 8.44)) * 10 , y + 73.00 , z - Math.cos(Math.toRadians(winkel + 8.44)) * 10);
-        auge2.setzePosition(x + Math.sin(Math.toRadians(winkel - 8.44)) * 10 , y + 73.00 , z - Math.cos(Math.toRadians(winkel - 8.44)) * 10);
-        kegel.setzePosition(x + Math.sin(Math.toRadians(winkel)) * 10, y+70.00,  z - Math.cos(Math.toRadians(winkel)) * 10);
+        auge1.setzePosition(x + Math.sin(Math.toRadians(winkel + 8.44)) * 10 , auge1.gibY() , z - Math.cos(Math.toRadians(winkel + 8.44)) * 10);
+        auge2.setzePosition(x + Math.sin(Math.toRadians(winkel - 8.44)) * 10 , auge2.gibY() , z - Math.cos(Math.toRadians(winkel - 8.44)) * 10);
+        kegel.setzePosition(x + Math.sin(Math.toRadians(winkel)) * 10, kegel.gibY(),  z - Math.cos(Math.toRadians(winkel)) * 10);
     }
 
     public void delete(){
@@ -114,6 +114,16 @@ public class Schneemann
         zylinder1.loesche();
         zylinder2.loesche();
         
-        // Garbage Collector manuell dazu anregen seinen Job zu machen. (Hat FPS massiv verbessert)
+    }
+    
+    public void dreheopferum(){
+        kugel1.setzePosition(x, y+60, z);
+        kugel2.setzePosition(x, y-45.00+60, z);
+        kugel3.setzePosition(x, y-70.00+60, z);
+        auge1.setzePosition(x+4.00, y-73.00+60, z-9.00);
+        auge2.setzePosition(x-4.00, y-73.00+60, z-9.00);
+        kegel.setzePosition(x, y-70.00+60, z-10.00);
+        zylinder1.setzePosition(x, y-82.00+60, z);
+        zylinder2.setzePosition(x, y-77.00+60, z);
     }
 }

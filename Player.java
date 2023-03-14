@@ -41,12 +41,11 @@ public class Player
         
         // Objekte erzeugen        
         // Kamera:
-        kamera = new GLKamera(1000,1000);
+        kamera = new GLKamera();
         
         kamera.setzePosition(x, y, z);
         kamera.zeigeAchsen(false);   
         kamera.setzeBlickpunkt(0, 100, 0);
-
 
         //Jetzt neu: Veränderte Variablennamen
         //Die folgenden Zeilen sind Orientierungshilfen fuer uns
