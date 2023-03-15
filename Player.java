@@ -41,7 +41,7 @@ public class Player
         
         // Objekte erzeugen        
         // Kamera:
-        kamera = new GLKamera();
+        kamera = new GLKamera(1000,1000);
         
         kamera.setzePosition(x, y, z);
         kamera.zeigeAchsen(false);   

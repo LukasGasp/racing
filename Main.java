@@ -65,8 +65,6 @@ public class Main
     private void intro() {
         intro = new JFrame();
         intro.setSize(1920,1080);
-        intro.setAlwaysOnTop(true);
-        intro.setUndecorated(true);
 
         Image importedImage = null;
         try {
